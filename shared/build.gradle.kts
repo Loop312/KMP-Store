@@ -36,16 +36,18 @@ kotlin {
         commonMain.dependencies {
             // put your Multiplatform dependencies here
             implementation(libs.kotlinx.serialization.json)
-            implementation(project.dependencies.platform(libs.supabase.bom))
-            implementation(libs.supabase.auth)
+            api(project.dependencies.platform(libs.supabase.bom))
+            api(libs.supabase.auth)
             implementation(libs.supabase.realtime)
             implementation(libs.supabase.postgrest)
-            implementation(project.dependencies.platform(libs.koin.bom))
-            implementation(libs.koin.core)
+            api(project.dependencies.platform(libs.koin.bom))
+            api(libs.koin.core)
+            api(libs.androidx.lifecycle.viewmodel)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
             implementation(libs.koin.test)
+            implementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")
         }
         jvmMain.dependencies {
             implementation(libs.ktor.client.okhttp)
