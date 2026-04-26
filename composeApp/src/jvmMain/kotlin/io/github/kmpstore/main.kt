@@ -7,6 +7,7 @@ fun main() = application {
     Window(
         onCloseRequest = ::exitApplication,
         title = "kmpstore",
+        alwaysOnTop = true
     ) {
         App()
     }
