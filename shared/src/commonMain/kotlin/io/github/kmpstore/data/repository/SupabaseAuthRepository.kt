@@ -10,9 +10,8 @@ import io.github.kmpstore.domain.repository.AuthRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-// commonMain/.../data/repository/SupabaseAuthRepository.kt
 class SupabaseAuthRepository(
-    private val supabaseClient: SupabaseClient
+    supabaseClient: SupabaseClient
 ) : AuthRepository {
     private val auth = supabaseClient.auth
 

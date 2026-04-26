@@ -2,6 +2,7 @@ package io.github.kmpstore.presentation.auth
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
@@ -38,6 +40,7 @@ import io.github.jan.supabase.auth.providers.Apple
 import io.github.jan.supabase.auth.providers.Github
 import io.github.jan.supabase.auth.providers.Google
 import io.github.jan.supabase.auth.providers.OAuthProvider
+import io.github.kmpstore.STORE_NAME
 import kmpstore.composeapp.generated.resources.Res
 import kmpstore.composeapp.generated.resources.compose_multiplatform
 import org.jetbrains.compose.resources.painterResource
@@ -60,56 +63,83 @@ fun LoginScreen(
     LaunchedEffect(state.isLoggedIn) {
         if (state.isLoggedIn) onAuthSuccess()
     }
+    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        Column(
+            modifier = Modifier
+                .widthIn(max = 600.dp)
+                .padding(24.dp)
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text(STORE_NAME, style = MaterialTheme.typography.headlineLarge)
+            Spacer(Modifier.height(32.dp))
 
-    Column(
-        modifier = Modifier.fillMaxSize().padding(24.dp).verticalScroll(rememberScrollState()),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text("Store Engine", style = MaterialTheme.typography.headlineLarge)
-        Spacer(Modifier.height(32.dp))
+            // 1. Dynamic Input Section
+            when (authMode) {
+                AuthMode.EMAIL -> {
+                    OutlinedTextField(
+                        email,
+                        { email = it },
+                        label = { Text("Email") },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    OutlinedTextField(
+                        password,
+                        { password = it },
+                        label = { Text("Password") },
+                        visualTransformation = PasswordVisualTransformation(),
+                        modifier = Modifier.fillMaxWidth()
+                    )
 
-        // 1. Dynamic Input Section
-        when (authMode) {
-            AuthMode.EMAIL -> {
-                OutlinedTextField(email, { email = it }, label = { Text("Email") }, modifier = Modifier.fillMaxWidth())
-                OutlinedTextField(password, { password = it }, label = { Text("Password") }, visualTransformation = PasswordVisualTransformation(), modifier = Modifier.fillMaxWidth())
+                    Button(
+                        onClick = { viewModel.handleIntent(LoginIntent.LoginWithEmail(email, password)) },
+                        modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
+                    ) { Text("Sign In") }
 
-                Button(
-                    onClick = { viewModel.handleIntent(LoginIntent.LoginWithEmail(email, password)) },
-                    modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
-                ) { Text("Sign In") }
+                    TextButton(onClick = { viewModel.handleIntent(LoginIntent.LoginWithMagicLink(email)) }) {
+                        Text("Send Magic Link")
+                    }
+                }
 
-                TextButton(onClick = { viewModel.handleIntent(LoginIntent.LoginWithMagicLink(email)) }) {
-                    Text("Send Magic Link")
+                AuthMode.PHONE -> {
+                    OutlinedTextField(
+                        phone,
+                        { phone = it },
+                        label = { Text("Phone (e.g. +1234567)") },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    Button(
+                        onClick = { viewModel.handleIntent(LoginIntent.LoginWithOTP(phone)) },
+                        modifier = Modifier.fillMaxWidth()
+                    ) { Text("Send SMS Code") }
                 }
             }
-            AuthMode.PHONE -> {
-                OutlinedTextField(phone, { phone = it }, label = { Text("Phone (e.g. +1234567)") }, modifier = Modifier.fillMaxWidth())
-                Button(
-                    onClick = { viewModel.handleIntent(LoginIntent.LoginWithOTP(phone)) },
-                    modifier = Modifier.fillMaxWidth()
-                ) { Text("Send SMS Code") }
+
+            // 2. Auth Mode Switcher
+            TextButton(onClick = { authMode = if (authMode == AuthMode.EMAIL) AuthMode.PHONE else AuthMode.EMAIL }) {
+                Text(if (authMode == AuthMode.EMAIL) "Use Phone instead" else "Use Email instead")
+            }
+
+            HorizontalDivider(Modifier.padding(vertical = 24.dp), thickness = 1.dp, color = DividerDefaults.color)
+
+            // 3. Modular Social Logins (OAuth)
+            Text("Or continue with", style = MaterialTheme.typography.bodySmall)
+            Row(horizontalArrangement = Arrangement.spacedBy(16.dp), modifier = Modifier.padding(top = 16.dp)) {
+                OAuthButton(Google) { viewModel.handleIntent(LoginIntent.LoginWithOAuth(Google)) }
+                OAuthButton(Github) { viewModel.handleIntent(LoginIntent.LoginWithOAuth(Github)) }
+                OAuthButton(Apple) { viewModel.handleIntent(LoginIntent.LoginWithOAuth(Apple)) }
+            }
+
+            if (state.isLoading) CircularProgressIndicator(Modifier.padding(top = 16.dp))
+            state.error?.let {
+                Text(
+                    it,
+                    color = MaterialTheme.colorScheme.error,
+                    modifier = Modifier.padding(top = 8.dp)
+                )
             }
         }
-
-        // 2. Auth Mode Switcher
-        TextButton(onClick = { authMode = if (authMode == AuthMode.EMAIL) AuthMode.PHONE else AuthMode.EMAIL }) {
-            Text(if (authMode == AuthMode.EMAIL) "Use Phone instead" else "Use Email instead")
-        }
-
-        HorizontalDivider(Modifier.padding(vertical = 24.dp), thickness = 1.dp, color = DividerDefaults.color)
-
-        // 3. Modular Social Logins (OAuth)
-        Text("Or continue with", style = MaterialTheme.typography.bodySmall)
-        Row(horizontalArrangement = Arrangement.spacedBy(16.dp), modifier = Modifier.padding(top = 16.dp)) {
-            OAuthButton(Google) { viewModel.handleIntent(LoginIntent.LoginWithOAuth(Google)) }
-            OAuthButton(Github) { viewModel.handleIntent(LoginIntent.LoginWithOAuth(Github)) }
-            OAuthButton(Apple) { viewModel.handleIntent(LoginIntent.LoginWithOAuth(Apple)) }
-        }
-
-        if (state.isLoading) CircularProgressIndicator(Modifier.padding(top = 16.dp))
-        state.error?.let { Text(it, color = MaterialTheme.colorScheme.error, modifier = Modifier.padding(top = 8.dp)) }
     }
 }
 

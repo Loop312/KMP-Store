@@ -102,5 +102,10 @@ buildkonfig {
             "SUPABASE_KEY",
             props.getProperty("SUPABASE_KEY") ?: ""
         )
+        buildConfigField(
+            STRING,
+            "STORE_NAME",
+            props.getProperty("STORE_NAME") ?: ""
+        )
     }
 }

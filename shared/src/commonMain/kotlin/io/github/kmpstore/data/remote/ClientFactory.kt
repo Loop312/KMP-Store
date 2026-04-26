@@ -1,4 +1,4 @@
-package io.github.kmpstore.supabase
+package io.github.kmpstore.data.remote
 
 import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.createSupabaseClient

@@ -4,7 +4,7 @@ import io.github.jan.supabase.SupabaseClient
 import io.github.kmpstore.data.repository.SupabaseAuthRepository
 import io.github.kmpstore.domain.repository.AuthRepository
 import io.github.kmpstore.presentation.auth.LoginViewModel
-import io.github.kmpstore.supabase.initSupabaseClient
+import io.github.kmpstore.data.remote.initSupabaseClient
 import org.koin.dsl.module
 
 val authModule = module {
