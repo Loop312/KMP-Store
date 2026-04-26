@@ -16,6 +16,8 @@ data class LoginState(
     val isLoggedIn: Boolean = false
 )
 
+enum class AuthMode { EMAIL, PHONE }
+
 sealed class LoginIntent {
     data class LoginWithEmail(val email: String, val pass: String) : LoginIntent()
     data class SignUpWithEmail(val email: String, val pass: String) : LoginIntent()
