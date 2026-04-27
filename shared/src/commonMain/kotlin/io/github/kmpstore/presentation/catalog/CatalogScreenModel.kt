@@ -2,20 +2,12 @@ package io.github.kmpstore.presentation.catalog
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import io.github.kmpstore.domain.model.Category
 import io.github.kmpstore.domain.repository.ProductRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-
-// presentation/catalog/CatalogScreenModel.kt
-data class CatalogState(
-    val isLoading: Boolean = false,
-    val topics: List<Category> = emptyList(),
-    val error: String? = null
-)
 
 class CatalogViewModel(private val repository: ProductRepository) : ViewModel() {
     private val _state = MutableStateFlow(CatalogState())
