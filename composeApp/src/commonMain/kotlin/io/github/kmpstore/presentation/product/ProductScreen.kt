@@ -9,9 +9,14 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @Composable
-fun ProductScreen(viewModel: ProductViewModel) {
+fun ProductScreen(
+    id: String,
+    viewModel: ProductViewModel = koinViewModel(key = id) { parametersOf(id) }
+) {
     val state by viewModel.state.collectAsState()
     Box(Modifier.fillMaxSize()) {
         if (state.isLoading) {
