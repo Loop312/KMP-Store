@@ -13,6 +13,6 @@ fun initSupabaseClient() = createSupabaseClient(
 ) {
     install(Auth)
     install(Postgrest)
-    defaultSerializer = KotlinXSerializer(Json)
+    defaultSerializer = KotlinXSerializer(Json { ignoreUnknownKeys = true })
     //install other modules
 }
