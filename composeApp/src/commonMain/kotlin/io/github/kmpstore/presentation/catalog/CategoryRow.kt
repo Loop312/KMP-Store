@@ -14,7 +14,10 @@ import androidx.compose.ui.unit.dp
 import io.github.kmpstore.domain.model.Category
 
 @Composable
-fun CategoryRow(category: Category) {
+fun CategoryRow(
+    category: Category,
+    onProductClick: (String) -> Unit,
+) {
     Column(modifier = Modifier.padding(bottom = 24.dp)) {
         Text(
             text = category.title,
@@ -27,7 +30,7 @@ fun CategoryRow(category: Category) {
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             items(category.products) { product ->
-                ProductCard(product)
+                ProductCard(product, onProductClick)
             }
         }
     }

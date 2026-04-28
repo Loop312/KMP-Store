@@ -18,9 +18,12 @@ import coil3.compose.AsyncImage
 import io.github.kmpstore.domain.model.Product
 
 @Composable
-fun ProductCard(product: Product) {
+fun ProductCard(
+    product: Product,
+    onProductClick: (String) -> Unit
+) {
     Card(
-        modifier = Modifier.width(160.dp).clickable { /* Navigate to Detail */ },
+        modifier = Modifier.width(160.dp).clickable { onProductClick(product.id) },
         shape = RoundedCornerShape(12.dp)
     ) {
         Column {

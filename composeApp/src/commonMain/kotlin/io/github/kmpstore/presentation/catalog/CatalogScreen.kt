@@ -16,7 +16,10 @@ import androidx.compose.ui.unit.dp
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun CatalogScreen(viewModel: CatalogViewModel = koinViewModel()) {
+fun CatalogScreen(
+    viewModel: CatalogViewModel = koinViewModel(),
+    onProductClick: (String) -> Unit,
+) {
     val state by viewModel.state.collectAsState()
     Box(Modifier.fillMaxSize()) {
         if (state.isLoading) {
@@ -30,7 +33,7 @@ fun CatalogScreen(viewModel: CatalogViewModel = koinViewModel()) {
                 contentPadding = PaddingValues(vertical = 16.dp)
             ) {
                 items(state.topics) { category ->
-                    CategoryRow(category)
+                    CategoryRow(category, onProductClick)
                 }
             }
         }
