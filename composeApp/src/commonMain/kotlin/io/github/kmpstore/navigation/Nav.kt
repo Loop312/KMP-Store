@@ -37,6 +37,8 @@ fun Nav() {
                 LoginScreen(
                     onAuthSuccess = {
                         println("Login success")
+                        backStack.clear()
+                        backStack.add(Route.ProductCatalog)
                     }
                 )
             }
