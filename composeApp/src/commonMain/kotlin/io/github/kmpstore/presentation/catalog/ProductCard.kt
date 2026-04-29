@@ -13,8 +13,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import io.github.kmpstore.IMAGE_LOADING_ERROR
 import io.github.kmpstore.domain.model.Product
 
 @Composable
@@ -27,16 +29,17 @@ fun ProductCard(
         shape = RoundedCornerShape(12.dp)
     ) {
         Column {
-            // AsyncImage from Coil3 (KMP compatible)
+            // AsyncImage from Coil3
             AsyncImage(
                 model = product.imageUrl,
                 contentDescription = product.name,
                 modifier = Modifier.height(120.dp).fillMaxWidth(),
-                contentScale = ContentScale.Crop
+                contentScale = ContentScale.Crop,
+                onError = { println(IMAGE_LOADING_ERROR(product.name, product.imageUrl, it.result.toString())) }
             )
 
             Column(Modifier.padding(8.dp)) {
-                Text(product.name, maxLines = 1, style = MaterialTheme.typography.titleMedium)
+                Text(product.name, maxLines = 1, style = MaterialTheme.typography.titleMedium, overflow = TextOverflow.Ellipsis)
                 Text(
                     "${product.currency} ${product.price}",
                     style = MaterialTheme.typography.bodyMedium,
