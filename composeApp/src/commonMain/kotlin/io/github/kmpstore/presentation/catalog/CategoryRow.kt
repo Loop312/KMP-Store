@@ -3,33 +3,54 @@ package io.github.kmpstore.presentation.catalog
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.text.font.FontWeight
 import io.github.kmpstore.domain.model.Category
+import io.github.kmpstore.pad
 
 @Composable
 fun CategoryRow(
     category: Category,
     onProductClick: (String) -> Unit,
 ) {
-    Column(modifier = Modifier.padding(bottom = 24.dp)) {
-        Text(
-            text = category.title,
-            style = MaterialTheme.typography.headlineSmall,
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
-        )
+    Column(modifier = Modifier.padding(pad/4)) {
+        // Category Header Section
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(pad),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = category.title,
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold
+            )
+
+            TextButton(onClick = { /* Optional: Navigate to full category */ }) {
+                Text("See All", style = MaterialTheme.typography.labelLarge)
+            }
+        }
 
         LazyRow(
-            contentPadding = PaddingValues(horizontal = 16.dp),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
+            contentPadding = PaddingValues(horizontal = pad),
+            horizontalArrangement = Arrangement.spacedBy(pad) // Increased spacing for a cleaner look
         ) {
-            items(category.products) { product ->
+            items(
+                items = category.products,
+                key = { it.id } // Performance boost for Lazy lists
+            ) { product ->
                 ProductCard(product, onProductClick)
             }
         }
