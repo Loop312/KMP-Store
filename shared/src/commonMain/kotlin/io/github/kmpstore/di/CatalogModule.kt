@@ -8,6 +8,7 @@ import io.github.kmpstore.data.repository.RealCartRepository
 import io.github.kmpstore.data.repository.SupabaseProductRepository
 import io.github.kmpstore.domain.repository.CartRepository
 import io.github.kmpstore.domain.repository.ProductRepository
+import io.github.kmpstore.presentation.cart.CartViewModel
 import io.github.kmpstore.presentation.catalog.CatalogViewModel
 import io.github.kmpstore.presentation.catalog.CategoryViewModel
 import io.github.kmpstore.presentation.product.ProductViewModel
@@ -35,6 +36,7 @@ val catalogModule = module {
         CategoryViewModel(categoryId = categoryId, repository = get())
     }
     factory<ProductViewModel> { (productId: String) ->
-        ProductViewModel(productId = productId, repository = get())
+        ProductViewModel(productId = productId, productRepository = get(), cartRepository = get())
     }
+    factory<CartViewModel> { CartViewModel(get()) }
 }

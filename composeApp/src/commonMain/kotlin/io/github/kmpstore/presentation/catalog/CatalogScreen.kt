@@ -22,11 +22,12 @@ fun CatalogScreen(
     viewModel: CatalogViewModel = koinViewModel(),
     onCategoryClick: (String, String) -> Unit,
     onProductClick: (String) -> Unit,
+    onCartClick: () -> Unit,
 ) {
     val state by viewModel.state.collectAsState()
 
     Scaffold(
-        topBar = { CatalogTopBar() }
+        topBar = { CatalogTopBar(onCartClick) }
     ) { paddingValues ->
         Box(
             modifier = Modifier

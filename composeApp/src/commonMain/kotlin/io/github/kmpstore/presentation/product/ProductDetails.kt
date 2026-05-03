@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.dp
 import io.github.kmpstore.domain.model.Product
 
 @Composable
-internal fun ProductDetails(product: Product, modifier: Modifier = Modifier) {
+internal fun ProductDetails(product: Product, onAddToCart: () -> Unit, modifier: Modifier = Modifier) {
     SelectionContainer {
         Column(modifier = modifier) {
             Text(
@@ -52,7 +52,7 @@ internal fun ProductDetails(product: Product, modifier: Modifier = Modifier) {
             Spacer(modifier = Modifier.height(40.dp))
 
             Button(
-                onClick = { /* TODO: Add to Cart */ },
+                onClick = { onAddToCart() },
                 modifier = Modifier.fillMaxWidth(),
                 shape = MaterialTheme.shapes.medium
             ) {

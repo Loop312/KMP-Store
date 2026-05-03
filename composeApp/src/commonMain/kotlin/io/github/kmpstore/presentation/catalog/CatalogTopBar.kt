@@ -1,5 +1,6 @@
 package io.github.kmpstore.presentation.catalog
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -22,7 +23,7 @@ import org.jetbrains.compose.resources.painterResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun CatalogTopBar() {
+internal fun CatalogTopBar(onCartClick: () -> Unit) {
     TopAppBar(
         title = { Text("$STORE_NAME's Catalog", style = MaterialTheme.typography.headlineMedium) },
         colors = TopAppBarDefaults.topAppBarColors(
@@ -30,7 +31,10 @@ internal fun CatalogTopBar() {
         ),
         modifier = Modifier.padding(horizontal = pad),
         actions = {
-            Icon(painterResource(Res.drawable.shopping_cart), "shopping_cart", Modifier.size(32.dp))
+            Icon(painterResource(Res.drawable.shopping_cart), "shopping_cart", Modifier
+                    .size(32.dp)
+                    .clickable(onClick = onCartClick)
+            )
             Spacer(Modifier.width(pad/2))
             Icon(painterResource(Res.drawable.account_circle), "account", Modifier.size(32.dp))
         }
