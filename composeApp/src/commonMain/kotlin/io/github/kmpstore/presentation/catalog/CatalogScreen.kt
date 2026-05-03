@@ -26,6 +26,7 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun CatalogScreen(
     viewModel: CatalogViewModel = koinViewModel(),
+    onCategoryClick: (String, String) -> Unit,
     onProductClick: (String) -> Unit,
 ) {
     val state by viewModel.state.collectAsState()
@@ -59,7 +60,7 @@ fun CatalogScreen(
                 else -> {
                     LazyColumn(modifier = Modifier.fillMaxSize()) {
                         items(state.topics) { category ->
-                            CategoryRow(category, onProductClick)
+                            CategoryRow(category, onCategoryClick, onProductClick)
                         }
                     }
                 }

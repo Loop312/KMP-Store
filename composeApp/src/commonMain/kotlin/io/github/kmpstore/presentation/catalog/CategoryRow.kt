@@ -21,9 +21,10 @@ import io.github.kmpstore.pad
 @Composable
 fun CategoryRow(
     category: Category,
+    onCategoryClick: (String, String) -> Unit,
     onProductClick: (String) -> Unit,
 ) {
-    Column(modifier = Modifier.padding(pad/4)) {
+    Column(modifier = Modifier.padding(pad)) {
         // Category Header Section
         Row(
             modifier = Modifier
@@ -38,7 +39,7 @@ fun CategoryRow(
                 fontWeight = FontWeight.Bold
             )
 
-            TextButton(onClick = { /* Optional: Navigate to full category */ }) {
+            TextButton(onClick = { onCategoryClick(category.id, category.title) }) {
                 Text("See All", style = MaterialTheme.typography.labelLarge)
             }
         }

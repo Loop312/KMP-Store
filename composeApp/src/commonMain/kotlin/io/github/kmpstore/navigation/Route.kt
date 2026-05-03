@@ -9,6 +9,7 @@ sealed interface Route : NavKey {
     data object Login : Route
     @Serializable
     data object ProductCatalog : Route
+    @Serializable data class CategoryDetail(val categoryId: String, val categoryName: String) : Route
     @Serializable
     data class ProductDetail(val productId: String) : Route
 }

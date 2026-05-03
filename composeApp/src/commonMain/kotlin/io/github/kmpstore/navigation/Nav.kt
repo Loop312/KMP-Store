@@ -13,19 +13,33 @@ import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
 import io.github.kmpstore.presentation.auth.LoginScreen
 import io.github.kmpstore.presentation.catalog.CatalogScreen
+import io.github.kmpstore.presentation.catalog.CategoryDetailScreen
 import io.github.kmpstore.presentation.product.ProductScreen
 
 @Composable
 fun Nav() {
     val backStack = remember { mutableStateListOf<Route>(Route.ProductCatalog) }
+    val onProductClick: (String) -> Unit = remember {
+        { productId ->
+            backStack.add(Route.ProductDetail(productId))
+        }
+    }
     NavDisplay(
         backStack = backStack,
         entryProvider = entryProvider {
             entry<Route.ProductCatalog> {
                 CatalogScreen(
-                    onProductClick = { id ->
-                        backStack.add(Route.ProductDetail(id))
-                    }
+                    onCategoryClick = { id, name ->
+                        backStack.add(Route.CategoryDetail(id, name))
+                    },
+                    onProductClick = onProductClick
+                )
+            }
+            entry<Route.CategoryDetail> { route ->
+                CategoryDetailScreen(
+                    categoryId = route.categoryId,
+                    categoryName = route.categoryName,
+                    onProductClick = onProductClick
                 )
             }
             entry<Route.ProductDetail> { route ->
