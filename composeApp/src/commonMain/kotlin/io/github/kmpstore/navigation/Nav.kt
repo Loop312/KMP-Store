@@ -12,6 +12,7 @@ import androidx.compose.ui.input.key.type
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
 import io.github.kmpstore.presentation.auth.LoginScreen
+import io.github.kmpstore.presentation.cart.CartScreen
 import io.github.kmpstore.presentation.catalog.CatalogScreen
 import io.github.kmpstore.presentation.catalog.CategoryDetailScreen
 import io.github.kmpstore.presentation.product.ProductScreen
@@ -24,6 +25,9 @@ fun Nav() {
             backStack.add(Route.ProductDetail(productId))
         }
     }
+    val onCartClick: () -> Unit = remember {
+        { backStack.add(Route.Cart) }
+    }
     NavDisplay(
         backStack = backStack,
         entryProvider = entryProvider {
@@ -32,7 +36,8 @@ fun Nav() {
                     onCategoryClick = { id, name ->
                         backStack.add(Route.CategoryDetail(id, name))
                     },
-                    onProductClick = onProductClick
+                    onProductClick = onProductClick,
+                    onCartClick = onCartClick
                 )
             }
             entry<Route.CategoryDetail> { route ->
@@ -44,8 +49,12 @@ fun Nav() {
             }
             entry<Route.ProductDetail> { route ->
                 ProductScreen(
-                    id = route.productId
+                    id = route.productId,
+                    onCartClick = onCartClick
                 )
+            }
+            entry<Route.Cart> {
+                CartScreen()
             }
             entry<Route.Login> {
                 LoginScreen(

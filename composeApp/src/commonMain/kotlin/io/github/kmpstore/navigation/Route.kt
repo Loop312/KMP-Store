@@ -12,5 +12,8 @@ sealed interface Route : NavKey {
     @Serializable data class CategoryDetail(val categoryId: String, val categoryName: String) : Route
     @Serializable
     data class ProductDetail(val productId: String) : Route
+
+    @Serializable
+    data object Cart : Route
 }
 
