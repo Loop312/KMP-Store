@@ -1,5 +1,6 @@
 package io.github.kmpstore
 
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.unit.dp
 
 const val SERVER_PORT = 8080
@@ -15,3 +16,5 @@ val IMAGE_LOADING_ERROR = { name: String?, url: String?, error: String? ->
 }
 
 val pad = 16.dp
+
+val roundedCornerShape = RoundedCornerShape(16.dp)

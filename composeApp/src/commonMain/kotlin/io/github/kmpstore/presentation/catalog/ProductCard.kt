@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -27,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import io.github.kmpstore.IMAGE_LOADING_ERROR
 import io.github.kmpstore.domain.model.Product
+import io.github.kmpstore.roundedCornerShape
 
 @Composable
 fun ProductCard(
@@ -93,5 +93,3 @@ fun ProductCard(
         }
     }
 }
-
-private val roundedCornerShape = RoundedCornerShape(16.dp)
