@@ -3,7 +3,7 @@ CREATE TABLE IF NOT EXISTS product (
     category_id TEXT NOT NULL,
     name TEXT NOT NULL,
     description TEXT,
-    price REAL NOT NULL,           -- SQLite doesn't have DECIMAL; use REAL or handle as Long (cents)
+    price INTEGER NOT NULL, --we'll use cents fo no rounding errors
     currency TEXT NOT NULL DEFAULT 'CAD',
     image_url TEXT,
     stock_quantity INTEGER,

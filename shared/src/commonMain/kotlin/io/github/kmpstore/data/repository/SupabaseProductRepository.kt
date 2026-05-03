@@ -26,14 +26,6 @@ class SupabaseProductRepository(
 ) : ProductRepository {
 
     override fun getStoreFront(): Flow<List<Category>> {
-        // Single request to fetch categories AND their nested products
-//        val response = supabase.from("categories")
-//            .select(Columns.raw("*, products(*)"))
-//            .decodeList<Category>()
-//        println(response)
-//        emit(response)
-
-        // Observe categories and products as separate flows[cite: 13, 14]
         val categoriesFlow = categoryQueries.selectAllCategories()
             .asFlow()
             .mapToList(Dispatchers.Default)
@@ -57,7 +49,6 @@ class SupabaseProductRepository(
     }
 
     override fun getProductsByCategory(categoryId: String): Flow<List<Product>> {
-        // Pure flow approach for the "See All" screen[cite: 14, 18]
         return productQueries.selectProductsByCategory(categoryId)
             .asFlow()
             .mapToList(Dispatchers.Default)
@@ -65,13 +56,6 @@ class SupabaseProductRepository(
     }
 
     override fun getProductById(id: String): Flow<Product> {
-//        val response = supabase.from("products").select {
-//            filter {
-//                eq("id", id)
-//            }
-//        }.decodeSingle<Product>()
-//        println(response)
-//        emit(response)
         return productQueries.selectProductById(id)
             .asFlow()
             .mapToOne(Dispatchers.Default)
@@ -80,12 +64,12 @@ class SupabaseProductRepository(
 
     override suspend fun refreshProducts(): Result<Unit> = withContext(Dispatchers.Default) {
         runCatching {
-            // Fetch DTOs from Supabase[cite: 4, 15, 16]
+            // Fetch DTOs from Supabase
             val remoteData = supabase.from("categories")
                 .select(Columns.raw("*, products(*)"))
                 .decodeList<CategoryDto>()
 
-            // Transaction handles the insert/replace logic[cite: 13, 14]
+            // Transaction handles the insert/replace logic
             categoryQueries.transaction {
                 remoteData.forEach { categoryDto ->
                     categoryQueries.insertCategory(

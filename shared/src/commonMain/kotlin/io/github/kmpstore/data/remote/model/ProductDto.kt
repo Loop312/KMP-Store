@@ -8,7 +8,7 @@ data class ProductDto(
     val id: String,
     val name: String,
     val description: String,
-    val price: Double,
+    val price: Long,
     @SerialName("image_url")val imageUrl: String,
     @SerialName("category_id") val categoryId: String,
     val currency: String = "CAD"
