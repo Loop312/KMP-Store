@@ -17,6 +17,9 @@ insertProduct:
 INSERT OR REPLACE INTO product(id, category_id, name, description, price, currency, image_url, stock_quantity, created_at)
 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
 
+selectProductById:
+SELECT * FROM product WHERE id = ?;
+
 selectProductsByCategory:
 SELECT * FROM product WHERE category_id = :categoryId;
 

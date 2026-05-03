@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface ProductRepository {
     fun getStoreFront(): Flow<List<Category>> // Returns topics with their products
-    suspend fun refreshProducts(): Result<Unit>
+    fun getProductsByCategory(categoryId: String): Flow<List<Product>>
     fun getProductById(id: String): Flow<Product>
+    suspend fun refreshProducts(): Result<Unit>
 }

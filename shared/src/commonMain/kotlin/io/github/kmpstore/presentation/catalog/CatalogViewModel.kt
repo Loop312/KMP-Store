@@ -20,6 +20,7 @@ class CatalogViewModel(private val repository: ProductRepository) : ViewModel() 
     private fun loadCatalog() {
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }
+            repository.refreshProducts()
             repository.getStoreFront()
                 .catch { e -> _state.update { it.copy(isLoading = false, error = e.message) } }
                 .collect { data ->
