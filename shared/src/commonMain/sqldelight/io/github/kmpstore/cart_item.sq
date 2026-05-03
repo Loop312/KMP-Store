@@ -1,0 +1,44 @@
+CREATE TABLE IF NOT EXISTS cart_item (
+    product_id TEXT NOT NULL PRIMARY KEY,
+    quantity INTEGER NOT NULL DEFAULT 1,
+    added_at TEXT NOT NULL,
+    FOREIGN KEY (product_id) REFERENCES product(id) ON DELETE CASCADE
+);
+
+-- Queries
+upsertCartItem:
+INSERT INTO cart_item(product_id, quantity, added_at)
+VALUES (?, ?, ?)
+ON CONFLICT(product_id) DO UPDATE SET
+quantity = quantity + excluded.quantity;
+
+decrementCartItem:
+UPDATE cart_item
+SET quantity = quantity - 1
+WHERE product_id = ? AND quantity > 1;
+
+removeCartItem:
+DELETE FROM cart_item WHERE product_id = ?;
+
+clearCart:
+DELETE FROM cart_item;
+
+-- This is the "God Query" for your UI
+selectCartDetails:
+SELECT
+    p.id,
+    p.name,
+    p.description,
+    p.price,
+    p.image_url,
+    p.category_id,
+    p.currency,
+    c.quantity,
+    (p.price * c.quantity) AS subtotal
+FROM cart_item c
+JOIN product p ON c.product_id = p.id;
+
+selectCartTotal:
+SELECT SUM(p.price * c.quantity)
+FROM cart_item c
+JOIN product p ON c.product_id = p.id;
