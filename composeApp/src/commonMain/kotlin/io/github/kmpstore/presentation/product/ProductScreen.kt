@@ -24,7 +24,7 @@ fun ProductScreen(
 
     Scaffold(
         topBar = {
-            ProductTopBar(state.product)
+            ProductTopBar(state.product?.name ?: "Loading...")
         }
     ) { paddingValues ->
         Box(
