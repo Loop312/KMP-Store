@@ -1,15 +1,19 @@
-package io.github.kmpstore.domain.model
+package io.github.kmpstore.data.remote.model
 
-data class Product(
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class ProductDto(
     val id: String,
     val name: String,
     val description: String,
     val price: Double,
-    val imageUrl: String,
-    val categoryId: String,
+    @SerialName("image_url")val imageUrl: String,
+    @SerialName("category_id") val categoryId: String,
     val currency: String = "CAD"
 ) {
-    constructor(product: io.github.kmpstore.Product) : this (
+    constructor(product: io.github.kmpstore.Product) : this(
         id = product.id,
         name = product.name,
         description = product.description ?: "",
