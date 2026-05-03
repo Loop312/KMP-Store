@@ -13,6 +13,7 @@ val sqldelightModule = module {
     single<SqlSchema<QueryResult.AsyncValue<Unit>>> { Database.Schema }
     single { get<Database>().productQueries }
     single { get<Database>().categoryQueries }
+    single { get<Database>().cart_itemQueries }
 }
 
 expect val platformSqldelightModule: Module
