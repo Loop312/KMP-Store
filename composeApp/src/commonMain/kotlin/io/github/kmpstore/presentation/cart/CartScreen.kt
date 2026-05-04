@@ -1,10 +1,9 @@
 package io.github.kmpstore.presentation.cart
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -20,13 +19,13 @@ fun CartScreen(
     val state by viewModel.state.collectAsState()
 
     Scaffold(
-        topBar = {}
-    ) {
-        Box {
+        topBar = { CartTopBar() }
+    ) { padding ->
+        Box(Modifier.padding(padding)) {
             when {
                 state.isLoading -> CircularProgressIndicator(Modifier.align(Alignment.Center))
                 state.error != null -> ErrorMessage(state.error!!, Modifier.align(Alignment.Center))
-                else -> { Column {state.items.forEach { item -> Text("$item") }} }
+                else -> CartContent(state.items)
             }
         }
     }
