@@ -6,7 +6,6 @@ import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -17,6 +16,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -26,9 +26,16 @@ import io.github.kmpstore.IMAGE_LOADING_ERROR
 import io.github.kmpstore.domain.model.CartItem
 import io.github.kmpstore.pad
 import io.github.kmpstore.roundedCornerShape
+import kmpstore.composeapp.generated.resources.Res
+import kmpstore.composeapp.generated.resources.remove_shopping_cart
 
 @Composable
-fun ItemCard(item: CartItem) {
+fun ItemCard(
+    item: CartItem,
+    onIncrement: () -> Unit,
+    onDecrement: () -> Unit,
+    onRemove: () -> Unit
+) {
     val interactionSource = remember { MutableInteractionSource() }
     val isHovered by interactionSource.collectIsHoveredAsState()
 
@@ -47,7 +54,7 @@ fun ItemCard(item: CartItem) {
         interactionSource = interactionSource,
     ) {
         Row {
-            //Text("$item")
+            //Item Image
             AsyncImage(
                 model = item.product.imageUrl,
                 contentDescription = item.product.name,
@@ -57,8 +64,8 @@ fun ItemCard(item: CartItem) {
                     println(IMAGE_LOADING_ERROR(item.product.name, item.product.imageUrl, it.result.toString()))
                 }
             )
-            Column(modifier = Modifier.weight(2f), verticalArrangement = Arrangement.spacedBy(pad/2)) {
-                Spacer(Modifier.height(pad/4))
+            //Item Details
+            Column(modifier = Modifier.weight(2f).fillMaxHeight(), verticalArrangement = Arrangement.SpaceAround) {
                 Text(
                     text = item.product.name,
                     maxLines = 1,
@@ -84,7 +91,26 @@ fun ItemCard(item: CartItem) {
                     color = MaterialTheme.colorScheme.primary,
                     overflow = TextOverflow.Visible
                 )
+                Text(
+                    text = "Price: \$${item.quantity * item.product.price}",
+                    style = MaterialTheme.typography.bodyLarge,
+                    //color = MaterialTheme.colorScheme.primary,
+                    overflow = TextOverflow.Visible
+                )
             }
+            QuantitySelector(
+                quantity = item.quantity,
+                onIncrement = onIncrement,
+                onDecrement = onDecrement,
+                modifier = Modifier.align(Alignment.CenterVertically).weight(2f)
+            )
+            // Remove Button
+            CustomIconButton(
+                resource = Res.drawable.remove_shopping_cart,
+                onClick = onRemove,
+                modifier = Modifier.align(Alignment.Bottom).padding(pad/2),
+                isDestructive = true
+            )
         }
     }
 }

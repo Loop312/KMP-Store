@@ -25,7 +25,7 @@ fun CartScreen(
             when {
                 state.isLoading -> CircularProgressIndicator(Modifier.align(Alignment.Center))
                 state.error != null -> ErrorMessage(state.error!!, Modifier.align(Alignment.Center))
-                else -> CartContent(state.items)
+                else -> CartContent(state.items, viewModel::onIntent)
             }
         }
     }

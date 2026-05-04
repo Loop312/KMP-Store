@@ -15,7 +15,10 @@ import io.github.kmpstore.domain.model.CartItem
 import io.github.kmpstore.pad
 
 @Composable
-fun CartContent(items: List<CartItem>) {
+fun CartContent(
+    items: List<CartItem>,
+    onIntent: (CartIntent) -> Unit,
+) {
     BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
         val isWideScreen = maxWidth > 600.dp
 
@@ -27,24 +30,34 @@ fun CartContent(items: List<CartItem>) {
             ) {
                 LazyColumn(modifier = Modifier.weight(1.5f)) {
                     items(items) { item ->
-                        ItemCard(item)
+                        ItemCard(
+                            item = item,
+                            onIncrement = { onIntent(CartIntent.IncrementItem(item)) },
+                            onDecrement = { onIntent(CartIntent.DecrementItem(item)) },
+                            onRemove = { onIntent(CartIntent.RemoveItem(item)) }
+                        )
                     }
                 }
                 Column(
                     modifier = Modifier.weight(1f),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    CheckoutSummary(items)
+                    CheckoutSummary(items) { onIntent(CartIntent.Checkout) }
                 }
             }
         } else {
             Column(Modifier.fillMaxSize()) {
                 LazyColumn(modifier = Modifier.weight(1f)) {
                     items(items) { item ->
-                        ItemCard(item)
+                        ItemCard(
+                            item = item,
+                            onIncrement = { onIntent(CartIntent.IncrementItem(item)) },
+                            onDecrement = { onIntent(CartIntent.DecrementItem(item)) },
+                            onRemove = { onIntent(CartIntent.RemoveItem(item)) }
+                        )
                     }
                 }
-                CheckoutSummary(items)
+                CheckoutSummary(items) { onIntent(CartIntent.Checkout) }
             }
         }
     }
