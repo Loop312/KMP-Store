@@ -41,6 +41,7 @@ kotlin {
             api(libs.supabase.auth)
             implementation(libs.supabase.realtime)
             implementation(libs.supabase.postgrest)
+            implementation(libs.supabase.functions)
             api(project.dependencies.platform(libs.koin.bom))
             api(libs.koin.core)
             api(libs.androidx.lifecycle.viewmodel)
