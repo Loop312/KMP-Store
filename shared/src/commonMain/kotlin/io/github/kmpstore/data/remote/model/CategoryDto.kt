@@ -6,11 +6,14 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class CategoryDto(
     val id: String,
-    val title: String,
-    val products: List<ProductDto> = emptyList()
+    val name: String,
+    val slug: String,
+    val description: String?
 ) {
     constructor(category: Category) : this (
         id = category.id,
-        title = category.title,
+        name = category.name,
+        slug = category.slug,
+        description = category.description
     )
 }

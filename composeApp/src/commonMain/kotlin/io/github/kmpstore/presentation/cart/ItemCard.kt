@@ -80,7 +80,7 @@ fun ItemCard(
                     overflow = TextOverflow.Ellipsis
                 )
                 Text(
-                    text = "${item.product.currency} ${item.product.price}",
+                    text = item.product.formattedPrice,
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.primary,
                     fontWeight = FontWeight.SemiBold
@@ -92,7 +92,7 @@ fun ItemCard(
                     overflow = TextOverflow.Visible
                 )
                 Text(
-                    text = "Price: \$${item.quantity * item.product.price}",
+                    text = item.totalPriceFormatted,
                     style = MaterialTheme.typography.bodyLarge,
                     //color = MaterialTheme.colorScheme.primary,
                     overflow = TextOverflow.Visible

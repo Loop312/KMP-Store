@@ -34,12 +34,12 @@ fun CategoryRow(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = category.title,
+                text = category.name,
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold
             )
 
-            TextButton(onClick = { onCategoryClick(category.id, category.title) }) {
+            TextButton(onClick = { onCategoryClick(category.id, category.name) }) {
                 Text("See All", style = MaterialTheme.typography.labelLarge)
             }
         }

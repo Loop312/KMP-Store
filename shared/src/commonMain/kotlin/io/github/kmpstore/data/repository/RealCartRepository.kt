@@ -15,7 +15,7 @@ class RealCartRepository(
     private val cartItemQueries: Cart_itemQueries
 ) : CartRepository {
     override fun getCart(): Flow<List<CartItem>> {
-        return cartItemQueries.selectCartDetails { id, name, description, price, imageUrl, categoryId, currency, quantity, _ ->
+        return cartItemQueries.selectCartDetails { id, name, description, price, imageUrl, currency, quantity, priceId, _ ->
             CartItem(
                 product = Product(
                     id = id,
@@ -23,8 +23,8 @@ class RealCartRepository(
                     description = description ?: "",
                     price = price,
                     imageUrl = imageUrl ?: "URL NOT FOUND",
-                    categoryId = categoryId,
-                    currency = currency
+                    currency = currency,
+                    priceId = priceId
                 ),
                 quantity = quantity.toInt()
             )

@@ -86,7 +86,7 @@ fun ProductCard(
                 )
 
                 Text(
-                    text = "${product.currency} ${product.price}",
+                    text = product.formattedPrice,
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.primary,
                     fontWeight = FontWeight.SemiBold

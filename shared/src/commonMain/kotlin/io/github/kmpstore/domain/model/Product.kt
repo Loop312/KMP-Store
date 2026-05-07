@@ -6,8 +6,8 @@ data class Product(
     val description: String,
     val price: Long,
     val imageUrl: String,
-    val categoryId: String,
-    val currency: String = "CAD"
+    val currency: String = "CAD",
+    val priceId: String
 ) {
     constructor(product: io.github.kmpstore.Product) : this (
         id = product.id,
@@ -15,7 +15,14 @@ data class Product(
         description = product.description ?: "",
         price = product.price,
         imageUrl = product.image_url ?: "URL NOT FOUND",
-        categoryId = product.category_id,
-        currency = product.currency
+        currency = product.currency,
+        priceId = product.price_id
     )
+
+    val formattedPrice: String
+        get() {
+            val dollars = price / 100
+            val cents = (price % 100).toString().padStart(2, '0')
+            return "$currency $dollars.$cents"
+        }
 }
