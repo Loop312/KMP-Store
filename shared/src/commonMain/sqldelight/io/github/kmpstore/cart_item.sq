@@ -31,9 +31,9 @@ SELECT
     p.description,
     p.price,
     p.image_url,
-    p.category_id,
     p.currency,
     c.quantity,
+    p.price_id,
     (p.price * c.quantity) AS subtotal
 FROM cart_item c
 JOIN product p ON c.product_id = p.id;
