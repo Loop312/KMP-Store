@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -68,6 +69,7 @@ fun ProductCard(
                 model = product.imageUrl,
                 contentDescription = product.name,
                 modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop,
                 onError = {
                     println(IMAGE_LOADING_ERROR(product.name, product.imageUrl, it.result.toString()))
                 }
