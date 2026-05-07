@@ -1,0 +1,16 @@
+CREATE TABLE IF NOT EXISTS category_products (
+    product_id TEXT NOT NULL,
+    category_id TEXT NOT NULL,
+    FOREIGN KEY (product_id) REFERENCES product(id) ON DELETE CASCADE,
+    FOREIGN KEY (category_id) REFERENCES category(id) ON DELETE CASCADE
+);
+
+selectAllCategoryProducts:
+SELECT * FROM category_products;
+
+deleteAllCategoryProducts:
+DELETE FROM category_products;
+
+insertCategoryProduct:
+INSERT OR REPLACE INTO category_products(category_id, product_id)
+VALUES (?, ?);

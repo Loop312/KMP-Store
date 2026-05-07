@@ -10,7 +10,6 @@ data class ProductDto(
     val description: String,
     val price: Long,
     @SerialName("image_url")val imageUrl: String,
-    @SerialName("category_id") val categoryId: String,
     val currency: String = "CAD"
 ) {
     constructor(product: io.github.kmpstore.Product) : this(
@@ -19,7 +18,6 @@ data class ProductDto(
         description = product.description ?: "",
         price = product.price,
         imageUrl = product.image_url ?: "URL NOT FOUND",
-        categoryId = product.category_id,
         currency = product.currency
     )
 }

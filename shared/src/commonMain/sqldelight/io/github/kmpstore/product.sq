@@ -1,30 +1,26 @@
 CREATE TABLE IF NOT EXISTS product (
     id TEXT NOT NULL PRIMARY KEY,
-    category_id TEXT NOT NULL,
     name TEXT NOT NULL,
     description TEXT,
-    price INTEGER NOT NULL, --we'll use cents fo no rounding errors
-    currency TEXT NOT NULL DEFAULT 'CAD',
     image_url TEXT,
-    stock_quantity INTEGER,
-    created_at TEXT NOT NULL,
-    FOREIGN KEY (category_id) REFERENCES category(id) ON DELETE CASCADE
+    price INTEGER NOT NULL,
+    currency TEXT NOT NULL DEFAULT 'CAD',
+    price_id TEXT NOT NULL
 );
 
-CREATE INDEX IF NOT EXISTS idx_products_category_id ON product(category_id);
-
+-- Updated to only include product-specific fields
 insertProduct:
-INSERT OR REPLACE INTO product(id, category_id, name, description, price, currency, image_url, stock_quantity, created_at)
-VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
+INSERT OR REPLACE INTO product(id, name, description, image_url, price, currency, price_id)
+VALUES (?, ?, ?, ?, ?, ?, ?);
 
-selectProductById:
-SELECT * FROM product WHERE id = ?;
-
-selectProductsByCategory:
-SELECT * FROM product WHERE category_id = :categoryId;
+-- Join query to get products for a specific category
+selectProductsByCategoryId:
+SELECT p.* FROM product p
+JOIN category_products cp ON p.id = cp.product_id
+WHERE cp.category_id = ?;
 
 selectAllProducts:
 SELECT * FROM product;
 
-deleteProduct:
-DELETE FROM product WHERE id = ?;
+selectProductById:
+SELECT * FROM product WHERE id = ?;

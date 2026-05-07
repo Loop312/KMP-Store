@@ -18,7 +18,9 @@ import io.github.kmpstore.pad
 
 @Composable
 fun CheckoutSummary(items: List<CartItem>, onCheckout: () -> Unit) {
-    val totalPrice = items.sumOf { it.product.price * it.quantity }
+    val totalCents = items.sumOf { it.product.price * it.quantity }
+    val dollars = totalCents / 100
+    val cents = (totalCents % 100).toString().padStart(2, '0')
     val totalItems = items.sumOf { it.quantity }
 
     Column(
@@ -36,7 +38,7 @@ fun CheckoutSummary(items: List<CartItem>, onCheckout: () -> Unit) {
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             Text(
-                text = $$"$$$totalPrice", // Use currency from product if available[cite: 4, 6]
+                text = $$"$$$dollars.$$cents",
                 style = MaterialTheme.typography.bodyLarge,
                 fontWeight = FontWeight.Bold
             )
