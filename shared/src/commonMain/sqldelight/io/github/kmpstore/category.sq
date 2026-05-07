@@ -1,12 +1,13 @@
 CREATE TABLE IF NOT EXISTS category (
     id TEXT NOT NULL PRIMARY KEY, -- Mapping UUID to TEXT
-    title TEXT NOT NULL,
-    created_at TEXT NOT NULL      -- ISO 8601 string for compatibility
+    name TEXT NOT NULL,
+    slug TEXT NOT NULL,
+    description TEXT
 );
 
 insertCategory:
-INSERT OR REPLACE INTO category(id, title, created_at)
-VALUES (?, ?, ?);
+INSERT OR REPLACE INTO category(id, name, slug, description)
+VALUES (?, ?, ?, ?);
 
 selectAllCategories:
 SELECT * FROM category;

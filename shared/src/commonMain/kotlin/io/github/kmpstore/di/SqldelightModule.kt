@@ -14,6 +14,7 @@ val sqldelightModule = module {
     single { get<Database>().productQueries }
     single { get<Database>().categoryQueries }
     single { get<Database>().cart_itemQueries }
+    single { get<Database>().category_productsQueries }
 }
 
 expect val platformSqldelightModule: Module
