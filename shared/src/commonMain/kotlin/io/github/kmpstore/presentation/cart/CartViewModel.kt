@@ -2,15 +2,25 @@ package io.github.kmpstore.presentation.cart
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import io.github.jan.supabase.SupabaseClient
+import io.github.jan.supabase.functions.functions
 import io.github.kmpstore.domain.model.CartItem
 import io.github.kmpstore.domain.repository.CartRepository
+import io.ktor.client.statement.bodyAsText
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.serialization.json.addJsonObject
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.put
+import kotlinx.serialization.json.putJsonArray
 
-class CartViewModel(private val repository: CartRepository): ViewModel() {
+class CartViewModel(
+    private val repository: CartRepository,
+    private val supabase: SupabaseClient
+): ViewModel() {
     private val _state = MutableStateFlow(CartState())
     val state = _state.asStateFlow()
 
@@ -25,7 +35,7 @@ class CartViewModel(private val repository: CartRepository): ViewModel() {
             is CartIntent.DecrementItem -> decrementItem(intent.item)
             is CartIntent.RemoveItem -> removeItem(intent.item)
             is CartIntent.ClearCart -> emptyCart()
-            is CartIntent.Checkout -> { /* Handle checkout logic */ }
+            is CartIntent.Checkout -> checkout()
         }
     }
 
@@ -61,6 +71,33 @@ class CartViewModel(private val repository: CartRepository): ViewModel() {
     private fun emptyCart() {
         viewModelScope.launch {
             repository.clearCart()
+        }
+    }
+
+    private fun checkout() {
+        viewModelScope.launch {
+            try {
+                val response = supabase.functions.invoke(
+                    function = "stripe-checkout",
+                    body = buildJsonObject {
+                        putJsonArray("items") {
+                            _state.value.items.forEach { item ->
+                                addJsonObject {
+                                    put("price", item.product.priceId)
+                                    put("quantity", item.quantity)
+                                }
+                            }
+                        }
+                    }
+                )
+                println(response)
+                println(response.bodyAsText())
+                // of course will do it properly later
+                val url = response.bodyAsText().drop(8).dropLast(2)
+                println(url)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 }

@@ -18,7 +18,7 @@ import org.koin.dsl.module
 @OptIn(ExperimentalCoilApi::class)
 val catalogModule = module {
     includes(networkModule)
-    single<ProductRepository> { SupabaseProductRepository(get(), get(), get()) }
+    single<ProductRepository> { SupabaseProductRepository(get(), get(), get(), get()) }
     single<CartRepository> { RealCartRepository(get()) }
     single<ImageLoader> {
         ImageLoader.Builder(context = get()).components {
@@ -38,5 +38,5 @@ val catalogModule = module {
     factory<ProductViewModel> { (productId: String) ->
         ProductViewModel(productId = productId, productRepository = get(), cartRepository = get())
     }
-    factory<CartViewModel> { CartViewModel(get()) }
+    factory<CartViewModel> { CartViewModel(get(), get()) }
 }
