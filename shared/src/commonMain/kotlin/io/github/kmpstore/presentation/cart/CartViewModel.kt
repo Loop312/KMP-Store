@@ -6,12 +6,13 @@ import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.functions.functions
 import io.github.kmpstore.domain.model.CartItem
 import io.github.kmpstore.domain.repository.CartRepository
-import io.ktor.client.statement.bodyAsText
+import io.ktor.client.call.body
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.addJsonObject
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
@@ -23,6 +24,9 @@ class CartViewModel(
 ): ViewModel() {
     private val _state = MutableStateFlow(CartState())
     val state = _state.asStateFlow()
+
+    private val _checkoutUrl = MutableStateFlow<String?>(null)
+    val checkoutUrl = _checkoutUrl.asStateFlow()
 
     init {
         onIntent(CartIntent.Refresh)
@@ -89,15 +93,19 @@ class CartViewModel(
                             }
                         }
                     }
-                )
-                println(response)
-                println(response.bodyAsText())
-                // of course will do it properly later
-                val url = response.bodyAsText().drop(8).dropLast(2)
-                println(url)
+                ).body<Checkout>()
+                println(response.url)
+                _checkoutUrl.value = response.url
+                emptyCart()
             } catch (e: Exception) {
-                e.printStackTrace()
+                _state.update { it.copy(error = "Checkout failed: ${e.message}") }
             }
         }
     }
+    fun clearCheckoutUrl() {
+        _checkoutUrl.value = null
+    }
 }
+
+@Serializable
+data class Checkout(val url: String)
