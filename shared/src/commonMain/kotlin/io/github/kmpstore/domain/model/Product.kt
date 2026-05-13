@@ -14,7 +14,7 @@ data class Product(
         name = product.name,
         description = product.description ?: "",
         price = product.price,
-        imageUrl = product.image_url ?: "URL NOT FOUND",
+        imageUrl = product.image_url ?: "https://placehold.co/400",
         currency = product.currency,
         priceId = product.price_id
     )
