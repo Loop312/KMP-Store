@@ -39,7 +39,7 @@ fun ProductCard(
 
     // on hover animations
     val popScale by animateFloatAsState(
-        targetValue = if (isHovered) 1.16f else 1f,
+        targetValue = if (isHovered) 1.12f else 1f,
         label = "Card Pop Scale"
     )
     val textAlphaScale by animateFloatAsState(
@@ -50,8 +50,8 @@ fun ProductCard(
     Card(
         onClick = { onProductClick(product.id) },
         modifier = Modifier
-            .width(160.dp)
-            .height(180.dp)
+            .width(180.dp)
+            .height(200.dp)
             .graphicsLayer {
                 scaleX = popScale
                 scaleY = popScale
@@ -92,6 +92,14 @@ fun ProductCard(
                     fontWeight = FontWeight.SemiBold
                 )
             }
+            Text(
+                text = "Stock: ${product.stock}",
+                modifier = Modifier.padding(12.dp).align(Alignment.BottomEnd).alpha(textAlphaScale),
+                maxLines = 1,
+                style = MaterialTheme.typography.titleSmall,
+                color = if (product.stock > 0) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.error,
+                overflow = TextOverflow.Ellipsis
+            )
         }
     }
 }

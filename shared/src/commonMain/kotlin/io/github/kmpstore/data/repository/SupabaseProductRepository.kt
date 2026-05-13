@@ -116,7 +116,8 @@ class SupabaseProductRepository(
                         image_url = item.mainImage,
                         price = item.unitAmount,
                         currency = item.currency,
-                        price_id = item.priceId
+                        price_id = item.priceId,
+                        stock = item.stock
                     )
                 }
 

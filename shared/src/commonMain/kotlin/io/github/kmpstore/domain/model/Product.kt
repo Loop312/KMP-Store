@@ -7,7 +7,8 @@ data class Product(
     val price: Long,
     val imageUrl: String,
     val currency: String = "CAD",
-    val priceId: String
+    val priceId: String,
+    val stock: Long
 ) {
     constructor(product: io.github.kmpstore.Product) : this (
         id = product.id,
@@ -16,7 +17,8 @@ data class Product(
         price = product.price,
         imageUrl = product.image_url ?: "https://placehold.co/400",
         currency = product.currency,
-        priceId = product.price_id
+        priceId = product.price_id,
+        stock = product.stock,
     )
 
     val formattedPrice: String

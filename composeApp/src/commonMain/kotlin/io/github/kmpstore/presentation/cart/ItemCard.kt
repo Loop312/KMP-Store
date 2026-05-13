@@ -65,7 +65,7 @@ fun ItemCard(
                 }
             )
             //Item Details
-            Column(modifier = Modifier.weight(2f).fillMaxHeight(), verticalArrangement = Arrangement.SpaceAround) {
+            Column(modifier = Modifier.padding(12.dp).weight(2f).fillMaxHeight(), verticalArrangement = Arrangement.SpaceAround) {
                 Text(
                     text = item.product.name,
                     maxLines = 1,
@@ -86,9 +86,9 @@ fun ItemCard(
                     fontWeight = FontWeight.SemiBold
                 )
                 Text(
-                    text = "Quantity: ${item.quantity}",
+                    text = "Stock: ${item.product.stock}",
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.primary,
+                    color = if (item.product.stock > 0) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error,
                     overflow = TextOverflow.Visible
                 )
                 Text(

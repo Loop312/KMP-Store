@@ -14,4 +14,5 @@ data class StoreCatalogDto(
     @SerialName("unit_amount") val unitAmount: Long,
     val currency: String,
     @SerialName("price_id") val priceId: String,
+    @SerialName("stock_level") val stock: Long,
 )
