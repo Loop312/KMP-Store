@@ -3,6 +3,7 @@ package io.github.kmpstore.navigation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyEventType
@@ -28,6 +29,9 @@ fun Nav() {
     val onCartClick: () -> Unit = remember {
         { backStack.add(Route.Cart) }
     }
+
+    BindBrowserNavigation(backStack)
+
     NavDisplay(
         backStack = backStack,
         entryProvider = entryProvider {
@@ -72,3 +76,6 @@ fun Nav() {
         }
     )
 }
+
+@Composable
+expect fun BindBrowserNavigation(backStack: SnapshotStateList<Route>)

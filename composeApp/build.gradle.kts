@@ -71,6 +71,9 @@ kotlin {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutinesSwing)
         }
+        webMain.dependencies {
+            implementation("com.github.terrakok:navigation3-browser:0.3.1")
+        }
     }
 }
 
