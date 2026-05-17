@@ -18,6 +18,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import io.github.kmpstore.domain.model.Resource
 import io.github.kmpstore.roundedCornerShape
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -29,6 +30,7 @@ fun ProductScreen(
     viewModel: ProductViewModel = koinViewModel(key = id) { parametersOf(id) }
 ) {
     val state by viewModel.state.collectAsState()
+    val productResource = state.product
 
     // for telling user they've added it to cart
     val snackbarHostState = remember { SnackbarHostState() }
@@ -47,7 +49,7 @@ fun ProductScreen(
     Scaffold(
         topBar = {
             ProductTopBar(
-                productName = state.product?.name ?: "Loading...",
+                productName = if (productResource is Resource.Success) productResource.data.name else "Loading...",
                 onAddToCart = { viewModel.addProductToCart(1) },
                 onCartClick = onCartClick,
                 onAccountClick = {},
@@ -55,20 +57,17 @@ fun ProductScreen(
         },
         snackbarHost = { SnackbarHost(hostState = snackbarHostState, modifier = Modifier.clip(roundedCornerShape)) }
     ) { paddingValues ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues),
-            contentAlignment = Alignment.Center
-        ) {
-            when {
-                state.isLoading -> CircularProgressIndicator()
-                state.product != null -> {
-                    ProductContent(product = state.product!!, onAddToCart = { viewModel.addProductToCart(1) } )
+        Box(Modifier.fillMaxSize().padding(paddingValues), contentAlignment = Alignment.Center) {
+            when(productResource ) {
+                is Resource.Loading -> CircularProgressIndicator()
+                is Resource.Success -> {
+                    ProductContent(
+                        product = productResource.data,
+                        onAddToCart = { viewModel.addProductToCart(1) }
+                    )
                 }
-                state.error != null -> {
-                    Text("Error: ${state.error}", color = MaterialTheme.colorScheme.error)
-                }
+                is Resource.Error -> Text("Error: ${productResource.message}", color = MaterialTheme.colorScheme.error)
+                is Resource.NotFound -> Text("Product not found.")
             }
         }
     }

@@ -1,9 +1,6 @@
 package io.github.kmpstore.presentation.product
 
 import io.github.kmpstore.domain.model.Product
+import io.github.kmpstore.domain.model.Resource
 
-data class ProductState(
-    val isLoading: Boolean = false,
-    val product: Product? = null,
-    val error: String? = null
-)
+data class ProductState(val product: Resource<Product> = Resource.Loading)
