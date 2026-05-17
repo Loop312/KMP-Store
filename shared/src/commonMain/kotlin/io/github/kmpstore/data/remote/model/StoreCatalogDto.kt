@@ -11,6 +11,7 @@ data class StoreCatalogDto(
     @SerialName("main_image") val mainImage: String?,
     @SerialName("category_name") val categoryName: String,
     @SerialName("category_slug") val categorySlug: String,
+    @SerialName("category_id") val categoryId: String,
     @SerialName("unit_amount") val unitAmount: Long,
     val currency: String,
     @SerialName("price_id") val priceId: String,
