@@ -63,7 +63,8 @@ fun ProductScreen(
                 is Resource.Success -> {
                     ProductContent(
                         product = productResource.data,
-                        onAddToCart = { viewModel.addProductToCart(1) }
+                        cartQuantity = state.cartQuantity,
+                        onIntent = viewModel::onIntent
                     )
                 }
                 is Resource.Error -> Text("Error: ${productResource.message}", color = MaterialTheme.colorScheme.error)

@@ -25,6 +25,14 @@ class ProductViewModel(
 
     init {
         loadProduct()
+        observeCartQuantity()
+    }
+
+    fun onIntent(intent: ProductIntent) {
+        when (intent) {
+            ProductIntent.IncrementCartCounter -> { addProductToCart(1) }
+            ProductIntent.DecrementCartCounter -> { decrementProductInCart(1) }
+        }
     }
 
     private fun loadProduct() {
@@ -38,7 +46,29 @@ class ProductViewModel(
     fun addProductToCart(quantity: Long) {
         viewModelScope.launch {
             cartRepository.addToCart(productId, quantity)
-            _effects.send(ProductUiEffect.ShowSnackbar("Added $quantity items to cart"))
+            if (_state.value.cartQuantity == 0) {
+                _effects.send(ProductUiEffect.ShowSnackbar("Added to cart"))
+            }
+        }
+    }
+
+    fun decrementProductInCart(quantity: Long) {
+        viewModelScope.launch {
+            if (_state.value.cartQuantity > 1) {
+                cartRepository.addToCart(productId, -quantity)
+            } else {
+                cartRepository.removeFromCart(productId)
+                _effects.send(ProductUiEffect.ShowSnackbar("Removed from cart"))
+            }
+        }
+    }
+
+    private fun observeCartQuantity() {
+        viewModelScope.launch {
+            cartRepository.getCart().collect { items ->
+                val quantity = items.find { it.product.id == productId }?.quantity ?: 0
+                _state.update { it.copy(cartQuantity = quantity) }
+            }
         }
     }
 }

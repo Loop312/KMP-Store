@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import io.github.kmpstore.domain.model.Product
 
 @Composable
-internal fun ProductContent(product: Product, onAddToCart: () -> Unit) {
+internal fun ProductContent(product: Product, cartQuantity: Int, onIntent: (ProductIntent) -> Unit) {
     // Adaptive Layout Logic
     BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
         val isWideScreen = maxWidth > 600.dp
@@ -40,7 +40,7 @@ internal fun ProductContent(product: Product, onAddToCart: () -> Unit) {
                         .weight(1f)
                         .verticalScroll(scrollState)
                 ) {
-                    ProductDetails(product, onAddToCart)
+                    ProductDetails(product, cartQuantity, onIntent)
                 }
             }
         } else {
@@ -51,7 +51,7 @@ internal fun ProductContent(product: Product, onAddToCart: () -> Unit) {
                     .verticalScroll(scrollState)
             ) {
                 ProductImage(product, Modifier.fillMaxWidth().height(400.dp))
-                ProductDetails(product, onAddToCart, Modifier.padding(20.dp))
+                ProductDetails(product, cartQuantity, onIntent, Modifier.padding(20.dp))
             }
         }
     }
