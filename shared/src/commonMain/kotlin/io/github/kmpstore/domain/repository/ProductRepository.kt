@@ -11,4 +11,5 @@ interface ProductRepository {
     fun getProductsByCategory(categoryId: String): Flow<productList>
     fun getProductById(id: String): Flow<Resource<Product>>
     suspend fun refreshProducts(): Result<Unit>
+    suspend fun refreshProduct(productId: String): Result<Unit>
 }

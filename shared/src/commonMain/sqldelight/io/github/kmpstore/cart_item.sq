@@ -43,3 +43,7 @@ selectCartTotal:
 SELECT SUM(p.price * c.quantity)
 FROM cart_item c
 JOIN product p ON c.product_id = p.id;
+
+getCartSize:
+SELECT COALESCE(SUM(quantity), 0)
+FROM cart_item;

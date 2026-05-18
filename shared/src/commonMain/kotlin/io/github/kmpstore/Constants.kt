@@ -6,6 +6,8 @@ import androidx.compose.ui.unit.dp
 const val SERVER_PORT = 8080
 val STORE_NAME = BuildKonfig.STORE_NAME
 
+val MAX_CART_SIZE = BuildKonfig.MAX_CART_SIZE
+
 const val DATABASE_NAME = "test.db"
 
 val IMAGE_LOADING_ERROR = { name: String?, url: String?, error: String? ->

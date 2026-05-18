@@ -1,6 +1,7 @@
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
+import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.INT
 import java.util.Properties
 
 plugins {
@@ -133,6 +134,11 @@ buildkonfig {
             STRING,
             "STORE_NAME",
             props.getProperty("STORE_NAME") ?: ""
+        )
+        buildConfigField(
+            INT,
+            "MAX_CART_SIZE",
+            props.getProperty("MAX_CART_SIZE") ?: "25"
         )
     }
 }

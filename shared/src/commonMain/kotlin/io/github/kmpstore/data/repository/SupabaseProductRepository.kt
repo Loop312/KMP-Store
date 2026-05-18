@@ -134,7 +134,7 @@ class SupabaseProductRepository(
         }
     }
 
-    private suspend fun refreshProduct(productId: String): Result<Unit> = withContext(Dispatchers.Default) {
+    override suspend fun refreshProduct(productId: String): Result<Unit> = withContext(Dispatchers.Default) {
         if (activeProductFetches.contains(productId) || missingProductIds.contains(productId)) {
             return@withContext Result.success(Unit)
         }

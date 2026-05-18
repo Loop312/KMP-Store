@@ -38,5 +38,5 @@ val catalogModule = module {
     factory<ProductViewModel> { (productId: String) ->
         ProductViewModel(productId = productId, productRepository = get(), cartRepository = get())
     }
-    factory<CartViewModel> { CartViewModel(get(), get()) }
+    factory<CartViewModel> { CartViewModel(get(), get(), get()) }
 }
