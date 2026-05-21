@@ -2,6 +2,7 @@ import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.INT
+import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.BOOLEAN
 import java.util.Properties
 
 plugins {
@@ -139,6 +140,16 @@ buildkonfig {
             INT,
             "MAX_CART_SIZE",
             props.getProperty("MAX_CART_SIZE") ?: "25"
+        )
+        buildConfigField(
+            BOOLEAN,
+            "VERIFICATION",
+            props.getProperty("VERIFICATION") ?: "false"
+        )
+        buildConfigField(
+            STRING,
+            "VERIFICATION_MESSAGE",
+            props.getProperty("VERIFICATION_MESSAGE") ?: ""
         )
     }
 }

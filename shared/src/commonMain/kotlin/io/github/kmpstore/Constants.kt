@@ -8,6 +8,10 @@ val STORE_NAME = BuildKonfig.STORE_NAME
 
 val MAX_CART_SIZE = BuildKonfig.MAX_CART_SIZE
 
+val VERIFICATION = BuildKonfig.VERIFICATION
+
+val VERIFICATION_MESSAGE = BuildKonfig.VERIFICATION_MESSAGE
+
 const val DATABASE_NAME = "test.db"
 
 val IMAGE_LOADING_ERROR = { name: String?, url: String?, error: String? ->
