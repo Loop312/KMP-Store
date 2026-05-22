@@ -25,6 +25,6 @@ data class Product(
         get() {
             val dollars = price / 100
             val cents = (price % 100).toString().padStart(2, '0')
-            return "$currency $dollars.$cents"
+            return "\$$dollars.$cents $currency"
         }
 }
