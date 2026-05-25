@@ -9,6 +9,7 @@ import io.github.kmpstore.CategoryQueries
 import io.github.kmpstore.ProductQueries
 import io.github.kmpstore.Category_productsQueries
 import io.github.kmpstore.data.remote.model.CategoryDto
+import io.github.kmpstore.data.remote.model.CategoryProductsDto
 import io.github.kmpstore.data.remote.model.StoreCatalogDto
 import io.github.kmpstore.domain.model.Category
 import io.github.kmpstore.domain.model.Product
@@ -126,10 +127,14 @@ class SupabaseProductRepository(
             val categoriesDeferred = async {
                 supabase.from("categories").select().decodeList<CategoryDto>()
             }
+            val junctionsDeferred = async {
+                supabase.from("category_products").select().decodeList<CategoryProductsDto>()
+            }
             val catalogDeferred = async {
                 supabase.from("store_catalog").select().decodeList<StoreCatalogDto>()
             }
             val remoteCategories = categoriesDeferred.await()
+            val remoteJunctions = junctionsDeferred.await()
             val remoteCatalog = catalogDeferred.await()
 
             // 2. Perform Atomic Transaction
@@ -145,7 +150,7 @@ class SupabaseProductRepository(
                         parent_id = category.parentId
                     )
                 }
-                insertCatalogAndJunctions(remoteCatalog)
+                insertCatalogAndJunctions(remoteCatalog, remoteJunctions)
             }
         }
     }
@@ -193,6 +198,11 @@ class SupabaseProductRepository(
                     .select { filter { eq("id", categoryId) } }
                     .decodeSingleOrNull<CategoryDto>()
             }
+            val junctionsDeferred = async {
+                supabase.from("category_products")
+                    .select { filter { eq("category_id", categoryId) } }
+                    .decodeList<CategoryProductsDto>()
+            }
             val catalogDeferred = async {
                 supabase.from("store_catalog")
                     .select { filter { eq("category_id", categoryId) } }
@@ -200,6 +210,7 @@ class SupabaseProductRepository(
             }
 
             val remoteCategory = categoryDeferred.await()
+            val remoteJunctions = junctionsDeferred.await()
             val remoteCatalog = catalogDeferred.await()
 
             if (remoteCategory == null) {
@@ -215,14 +226,14 @@ class SupabaseProductRepository(
                     slug = remoteCategory.slug,
                     parent_id = remoteCategory.parentId
                 )
-                insertCatalogAndJunctions(remoteCatalog)
+                insertCatalogAndJunctions(remoteCatalog, remoteJunctions)
             }
         }
         activeCategoryFetches.remove(categoryId)
         result
     }
 
-    private suspend fun insertCatalogAndJunctions(catalog: List<StoreCatalogDto>) {
+    private suspend fun insertCatalogAndJunctions(catalog: List<StoreCatalogDto>, junctions: List<CategoryProductsDto>) {
         catalog.forEach { item ->
             productQueries.insertProduct(
                 id = item.productId,
@@ -234,6 +245,8 @@ class SupabaseProductRepository(
                 price_id = item.priceId,
                 stock = item.stock
             )
+        }
+        junctions.forEach { item ->
             categoryProductsQueries.insertCategoryProduct(
                 category_id = item.categoryId,
                 product_id = item.productId
