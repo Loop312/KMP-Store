@@ -84,6 +84,7 @@ class SupabaseProductRepository(
                     id = dbCategory.id,
                     name = dbCategory.name,
                     slug = dbCategory.slug,
+                    parentId = dbCategory.parent_id,
                     products = getProductsForCategoryTree(dbCategory.id) // Tree evaluation
                 )
             }
