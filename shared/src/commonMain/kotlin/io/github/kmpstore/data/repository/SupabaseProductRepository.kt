@@ -9,7 +9,6 @@ import io.github.kmpstore.CategoryQueries
 import io.github.kmpstore.ProductQueries
 import io.github.kmpstore.Category_productsQueries
 import io.github.kmpstore.data.remote.model.CategoryDto
-import io.github.kmpstore.data.remote.model.CategoryProductsDto
 import io.github.kmpstore.data.remote.model.StoreCatalogDto
 import io.github.kmpstore.domain.model.Category
 import io.github.kmpstore.domain.model.Product
@@ -54,18 +53,38 @@ class SupabaseProductRepository(
             .distinctUntilChanged()
 
         return combine(categoriesFlow, productMapFlow, junctionsFlow) { categories, productMap, junctions ->
-            // Group junction records by category ID
+            // 1. Group junction records by category ID (Contains only direct assignments)
             val junctionsByCategory = junctions.groupBy { it.category_id }
-            // Build the Category objects
+
+            // 2. Map out a helper map of Category ID -> Direct List of Products
+            val directCategoryProducts = categories.associate { dbCategory ->
+                val productIds = junctionsByCategory[dbCategory.id].orEmpty()
+                val products = productIds.mapNotNull { junction ->
+                    productMap[junction.product_id]?.let { Product(it) }
+                }
+                dbCategory.id to products
+            }
+
+            // 3. Helper function to recursively collect products from a category and all its subcategories
+            fun getProductsForCategoryTree(categoryId: String): List<Product> {
+                val directProducts = directCategoryProducts[categoryId].orEmpty()
+
+                // Find categories where the parent_id is this category's ID
+                val childCategoryProducts = categories
+                    .filter { it.parent_id == categoryId }
+                    .flatMap { child -> getProductsForCategoryTree(child.id) }
+
+                // Combine them and ensure uniqueness if a product is in multiple subcategories
+                return (directProducts + childCategoryProducts).distinctBy { it.id }
+            }
+
+            // 4. Build the final Category objects with full nested trees included
             categories.map { dbCategory ->
-                val productIdsForCategory = junctionsByCategory[dbCategory.id].orEmpty()
                 Category(
                     id = dbCategory.id,
-                    name = dbCategory.name, // Changed from title to name
+                    name = dbCategory.name,
                     slug = dbCategory.slug,
-                    products = productIdsForCategory.mapNotNull { junction ->
-                        productMap[junction.product_id]?.let { Product(it) }
-                    }
+                    products = getProductsForCategoryTree(dbCategory.id) // Tree evaluation
                 )
             }
         }
@@ -106,14 +125,10 @@ class SupabaseProductRepository(
             val categoriesDeferred = async {
                 supabase.from("categories").select().decodeList<CategoryDto>()
             }
-            val junctionsDeferred = async {
-                supabase.from("category_products").select().decodeList<CategoryProductsDto>()
-            }
             val catalogDeferred = async {
                 supabase.from("store_catalog").select().decodeList<StoreCatalogDto>()
             }
             val remoteCategories = categoriesDeferred.await()
-            val remoteJunctions = junctionsDeferred.await()
             val remoteCatalog = catalogDeferred.await()
 
             // 2. Perform Atomic Transaction
@@ -126,10 +141,10 @@ class SupabaseProductRepository(
                         id = category.id,
                         name = category.name,
                         slug = category.slug,
-                        description = category.description
+                        parent_id = category.parentId
                     )
                 }
-                insertCatalogAndJunctions(remoteCatalog, remoteJunctions)
+                insertCatalogAndJunctions(remoteCatalog)
             }
         }
     }
@@ -177,11 +192,6 @@ class SupabaseProductRepository(
                     .select { filter { eq("id", categoryId) } }
                     .decodeSingleOrNull<CategoryDto>()
             }
-            val junctionsDeferred = async {
-                supabase.from("category_products")
-                    .select { filter { eq("category_id", categoryId) } }
-                    .decodeList<CategoryProductsDto>()
-            }
             val catalogDeferred = async {
                 supabase.from("store_catalog")
                     .select { filter { eq("category_id", categoryId) } }
@@ -189,7 +199,6 @@ class SupabaseProductRepository(
             }
 
             val remoteCategory = categoryDeferred.await()
-            val remoteJunctions = junctionsDeferred.await()
             val remoteCatalog = catalogDeferred.await()
 
             if (remoteCategory == null) {
@@ -203,16 +212,16 @@ class SupabaseProductRepository(
                     id = remoteCategory.id,
                     name = remoteCategory.name,
                     slug = remoteCategory.slug,
-                    description = remoteCategory.description
+                    parent_id = remoteCategory.parentId
                 )
-                insertCatalogAndJunctions(remoteCatalog, remoteJunctions)
+                insertCatalogAndJunctions(remoteCatalog)
             }
         }
         activeCategoryFetches.remove(categoryId)
         result
     }
 
-    private suspend fun insertCatalogAndJunctions(catalog: List<StoreCatalogDto>, junctions: List<CategoryProductsDto>) {
+    private suspend fun insertCatalogAndJunctions(catalog: List<StoreCatalogDto>) {
         catalog.forEach { item ->
             productQueries.insertProduct(
                 id = item.productId,
@@ -224,12 +233,9 @@ class SupabaseProductRepository(
                 price_id = item.priceId,
                 stock = item.stock
             )
-        }
-
-        junctions.forEach { junction ->
             categoryProductsQueries.insertCategoryProduct(
-                category_id = junction.categoryId,
-                product_id = junction.productId
+                category_id = item.categoryId,
+                product_id = item.productId
             )
         }
     }

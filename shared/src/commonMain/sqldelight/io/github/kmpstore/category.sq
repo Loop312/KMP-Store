@@ -2,11 +2,11 @@ CREATE TABLE IF NOT EXISTS category (
     id TEXT NOT NULL PRIMARY KEY, -- Mapping UUID to TEXT
     name TEXT NOT NULL,
     slug TEXT NOT NULL,
-    description TEXT
+    parent_id TEXT
 );
 
 insertCategory:
-INSERT OR REPLACE INTO category(id, name, slug, description)
+INSERT OR REPLACE INTO category(id, name, slug, parent_id)
 VALUES (?, ?, ?, ?);
 
 selectAllCategories:
