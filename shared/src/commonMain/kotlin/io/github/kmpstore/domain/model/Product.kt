@@ -1,5 +1,7 @@
 package io.github.kmpstore.domain.model
 
+import io.github.kmpstore.SelectAllCategoryProductsRecursive
+
 data class Product(
     val id: String,
     val name: String,
@@ -11,6 +13,17 @@ data class Product(
     val stock: Long
 ) {
     constructor(product: io.github.kmpstore.Product) : this (
+        id = product.id,
+        name = product.name,
+        description = product.description ?: "",
+        price = product.price,
+        imageUrl = product.image_url ?: "https://placehold.co/400",
+        currency = product.currency,
+        priceId = product.price_id,
+        stock = product.stock,
+    )
+
+    constructor(product: SelectAllCategoryProductsRecursive) : this (
         id = product.id,
         name = product.name,
         description = product.description ?: "",

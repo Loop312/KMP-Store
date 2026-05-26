@@ -42,58 +42,34 @@ class SupabaseProductRepository(
             .mapToList(Dispatchers.Default)
             .distinctUntilChanged()
 
-        val productMapFlow = productQueries.selectAllProducts()
+        val recursiveProductsMapFlow = productQueries.selectAllCategoryProductsRecursive()
             .asFlow()
             .mapToList(Dispatchers.Default)
-            .map { list -> list.associateBy { it.id } }
+            .map { list ->
+                // Group the products by their calculated root category ID
+                list.groupBy(
+                    keySelector = { it.category_id },
+                    valueTransform = { Product(it) }
+                )
+            }
             .distinctUntilChanged()
 
-        val junctionsFlow = categoryProductsQueries.selectAllCategoryProducts()
-            .asFlow()
-            .mapToList(Dispatchers.Default)
-            .distinctUntilChanged()
-
-        return combine(categoriesFlow, productMapFlow, junctionsFlow) { categories, productMap, junctions ->
-            // 1. Group junction records by category ID (Contains only direct assignments)
-            val junctionsByCategory = junctions.groupBy { it.category_id }
-
-            // 2. Map out a helper map of Category ID -> Direct List of Products
-            val directCategoryProducts = categories.associate { dbCategory ->
-                val productIds = junctionsByCategory[dbCategory.id].orEmpty()
-                val products = productIds.mapNotNull { junction ->
-                    productMap[junction.product_id]?.let { Product(it) }
-                }
-                dbCategory.id to products
-            }
-
-            // 3. Helper function to recursively collect products from a category and all its subcategories
-            fun getProductsForCategoryTree(categoryId: String): List<Product> {
-                val directProducts = directCategoryProducts[categoryId].orEmpty()
-
-                // Find categories where the parent_id is this category's ID
-                val childCategoryProducts = categories
-                    .filter { it.parent_id == categoryId }
-                    .flatMap { child -> getProductsForCategoryTree(child.id) }
-
-                // Combine them and ensure uniqueness if a product is in multiple subcategories
-                return (directProducts + childCategoryProducts).distinctBy { it.id }
-            }
-
-            // 4. Build the final Category objects with full nested trees included
+        return combine(categoriesFlow, recursiveProductsMapFlow) { categories, productsMap ->
             categories.map { dbCategory ->
                 Category(
                     id = dbCategory.id,
                     name = dbCategory.name,
                     slug = dbCategory.slug,
                     parentId = dbCategory.parent_id,
-                    products = getProductsForCategoryTree(dbCategory.id) // Tree evaluation
+                    // No more manual tree calculation! The DB already figured it out.
+                    products = productsMap[dbCategory.id].orEmpty().distinctBy { it.id }
                 )
             }
         }
     }
 
     override fun getProductsByCategory(categoryId: String): Flow<ProductRepository.productList> {
-        return productQueries.selectProductsByCategoryId(categoryId)
+        return productQueries.selectProductsByCategoryIdRecursive(categoryId)
             .asFlow()
             .mapToList(Dispatchers.Default)
             .map { list ->
