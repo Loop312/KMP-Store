@@ -18,14 +18,21 @@ class CatalogViewModel(private val repository: ProductRepository) : ViewModel() 
     }
 
     private fun loadCatalog() {
+        // 1. Immediately start collecting cached local DB data in a separate coroutine
         viewModelScope.launch {
-            _state.update { it.copy(isLoading = true) }
-            repository.refreshProducts()
             repository.getStoreFront()
-                .catch { e -> _state.update { it.copy(isLoading = false, error = e.message) } }
+                .catch { e -> _state.update { it.copy(error = e.message) } }
                 .collect { data ->
-                    _state.update { it.copy(isLoading = false, topics = data) }
+                    _state.update { it.copy(topics = data, isLoading = false) }
                 }
+        }
+
+        // 2. Refresh products from Supabase in the background
+        viewModelScope.launch {
+            // Only show full loading spinner if there is no local DB data cached yet
+            _state.update { it.copy(isLoading = it.topics.isEmpty()) }
+            repository.refreshProducts()
+            _state.update { it.copy(isLoading = false) }
         }
     }
 }

@@ -46,7 +46,7 @@ fun CatalogScreen(
                 }
                 else -> {
                     LazyColumn(modifier = Modifier.fillMaxSize()) {
-                        items(state.topics) { category ->
+                        items(items = state.topics, key = { it.id }) { category ->
                             CategoryRow(category, onCategoryClick, onProductClick)
                         }
                     }

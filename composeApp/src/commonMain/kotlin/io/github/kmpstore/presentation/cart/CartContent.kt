@@ -29,7 +29,7 @@ fun CartContent(
                     .padding(pad),
             ) {
                 LazyColumn(modifier = Modifier.weight(1.5f)) {
-                    items(items) { item ->
+                    items(items = items, key = { it.product.id }) { item ->
                         ItemCard(
                             item = item,
                             onIncrement = { onIntent(CartIntent.IncrementItem(item)) },
@@ -48,7 +48,7 @@ fun CartContent(
         } else {
             Column(Modifier.fillMaxSize()) {
                 LazyColumn(modifier = Modifier.weight(1f)) {
-                    items(items) { item ->
+                    items(items = items, key = { it.product.id }) { item ->
                         ItemCard(
                             item = item,
                             onIncrement = { onIntent(CartIntent.IncrementItem(item)) },

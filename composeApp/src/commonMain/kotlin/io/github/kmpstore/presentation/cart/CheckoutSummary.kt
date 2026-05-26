@@ -38,7 +38,7 @@ fun CheckoutSummary(items: List<CartItem>, onCheckout: () -> Unit) {
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             Text(
-                text = $$"$$$dollars.$$cents",
+                text = "\$$dollars.$cents",
                 style = MaterialTheme.typography.bodyLarge,
                 fontWeight = FontWeight.Bold
             )

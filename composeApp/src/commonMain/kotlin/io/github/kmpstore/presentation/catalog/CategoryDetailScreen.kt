@@ -48,7 +48,7 @@ fun CategoryDetailScreen(
                         verticalArrangement = Arrangement.spacedBy(pad),
                         modifier = Modifier.padding(pad).fillMaxSize(),
                     ) {
-                        items(products) { product ->
+                        items(items = products, key = { it.id }) { product ->
                             ProductCard(product, onProductClick)
                         }
                     }

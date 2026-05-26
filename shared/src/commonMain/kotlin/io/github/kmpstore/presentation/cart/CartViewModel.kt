@@ -9,6 +9,7 @@ import io.github.kmpstore.domain.model.CartItem
 import io.github.kmpstore.domain.repository.CartRepository
 import io.github.kmpstore.domain.repository.ProductRepository
 import io.ktor.client.call.body
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -33,6 +34,8 @@ class CartViewModel(
     private val _checkoutUrl = MutableStateFlow<String?>(null)
     val checkoutUrl = _checkoutUrl.asStateFlow()
 
+    private var loadCartJob: Job? = null
+
     private val _effects = Channel<CartUiEffect>(Channel.BUFFERED)
     val effects = _effects.receiveAsFlow()
 
@@ -52,7 +55,8 @@ class CartViewModel(
     }
 
     private fun loadCart() {
-        viewModelScope.launch {
+        loadCartJob?.cancel()
+        loadCartJob = viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }
             cartRepository.getCart()
                 .catch { e -> _state.update { it.copy(isLoading = false, error = e.message) } }
