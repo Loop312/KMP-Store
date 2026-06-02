@@ -8,12 +8,12 @@ import io.github.kmpstore.IMAGE_LOADING_ERROR
 import io.github.kmpstore.domain.model.Product
 
 @Composable
-internal fun ProductImage(product: Product, modifier: Modifier) {
+internal fun ProductImage(product: Product, modifier: Modifier = Modifier) {
     AsyncImage(
         model = product.imageUrl,
         contentDescription = product.name,
         modifier = modifier,
-        contentScale = ContentScale.Fit,
+        contentScale = ContentScale.Crop,
         onError = {
             println(IMAGE_LOADING_ERROR(product.name, product.imageUrl, it.result.toString()))
         }
