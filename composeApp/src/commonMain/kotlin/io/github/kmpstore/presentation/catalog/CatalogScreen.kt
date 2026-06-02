@@ -27,7 +27,15 @@ fun CatalogScreen(
     val state by viewModel.state.collectAsState()
 
     Scaffold(
-        topBar = { CatalogTopBar(onCartClick) }
+        topBar = {
+            CatalogTopBar(
+                searchQuery = state.searchQuery,
+                searchResults = state.searchResults,
+                onCartClick = onCartClick,
+                onProductClick = onProductClick,
+                onIntent = viewModel::onIntent
+            )
+        }
     ) { paddingValues ->
         Box(
             modifier = Modifier

@@ -11,8 +11,16 @@ CREATE TABLE IF NOT EXISTS product (
 
 -- Updated to only include product-specific fields
 insertProduct:
-INSERT OR REPLACE INTO product(id, name, description, image_url, price, currency, price_id, stock)
-VALUES (?, ?, ?, ?, ?, ?, ?, ?);
+INSERT INTO product(id, name, description, image_url, price, currency, price_id, stock)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+ON CONFLICT (id) DO UPDATE SET
+    name = excluded.name,
+    description = excluded.description,
+    image_url = excluded.image_url,
+    price = excluded.price,
+    currency = excluded.currency,
+    price_id = excluded.price_id,
+    stock = excluded.stock;
 
 -- Join query to get products for a specific category
 selectProductsByCategoryId:
@@ -52,3 +60,8 @@ WITH RECURSIVE category_tree(root_id, current_id) AS (
 SELECT DISTINCT ct.root_id AS category_id, p.* FROM product p
 JOIN category_products cp ON p.id = cp.product_id
 JOIN category_tree ct ON cp.category_id = ct.current_id;
+
+searchProducts:
+SELECT * FROM product
+WHERE name LIKE :query OR description LIKE :query
+LIMIT :limit;

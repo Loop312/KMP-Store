@@ -31,7 +31,7 @@ val catalogModule = module {
         }.build()
     }
 
-    factory<CatalogViewModel> { CatalogViewModel(get()) }
+    factory<CatalogViewModel> { CatalogViewModel(get(), get()) }
     factory<CategoryViewModel> { (categoryId: String) ->
         CategoryViewModel(categoryId = categoryId, repository = get())
     }
