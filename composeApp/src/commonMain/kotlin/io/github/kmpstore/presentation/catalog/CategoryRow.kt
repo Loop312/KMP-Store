@@ -21,7 +21,7 @@ import androidx.compose.ui.text.font.FontWeight
 import io.github.kmpstore.domain.model.Category
 import io.github.kmpstore.pad
 import io.github.oikvpqya.compose.fastscroller.HorizontalScrollbar
-import io.github.oikvpqya.compose.fastscroller.material3.defaultMaterialScrollbarStyle
+import io.github.oikvpqya.compose.fastscroller.defaultScrollbarStyle
 import io.github.oikvpqya.compose.fastscroller.rememberScrollbarAdapter
 
 @Composable
@@ -65,7 +65,7 @@ fun CategoryRow(
         Spacer(Modifier.height(pad))
         HorizontalScrollbar(
             adapter = rememberScrollbarAdapter(listState),
-            style = defaultMaterialScrollbarStyle(),
+            style = defaultScrollbarStyle(),
             modifier = Modifier.padding(horizontal = pad)
         )
     }
