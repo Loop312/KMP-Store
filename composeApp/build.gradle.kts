@@ -63,6 +63,8 @@ kotlin {
             implementation(libs.jetbrains.navigation3.ui)
             implementation(libs.jetbrains.material3.adaptiveNavigation3)
             implementation(libs.jetbrains.lifecycle.viewmodelNavigation3)
+            implementation("io.github.oikvpqya.compose.fastscroller:fastscroller-core:0.3.2")
+            implementation("io.github.oikvpqya.compose.fastscroller:fastscroller-material3:0.3.2")
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

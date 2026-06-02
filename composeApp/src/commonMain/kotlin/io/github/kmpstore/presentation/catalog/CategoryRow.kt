@@ -4,10 +4,13 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -17,6 +20,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import io.github.kmpstore.domain.model.Category
 import io.github.kmpstore.pad
+import io.github.oikvpqya.compose.fastscroller.HorizontalScrollbar
+import io.github.oikvpqya.compose.fastscroller.material3.defaultMaterialScrollbarStyle
+import io.github.oikvpqya.compose.fastscroller.rememberScrollbarAdapter
 
 @Composable
 fun CategoryRow(
@@ -24,7 +30,7 @@ fun CategoryRow(
     onCategoryClick: (String, String) -> Unit,
     onProductClick: (String) -> Unit,
 ) {
-    Column(modifier = Modifier.padding(pad)) {
+    Column(modifier = Modifier.padding(pad/2)) {
         // Category Header Section
         Row(
             modifier = Modifier
@@ -43,8 +49,9 @@ fun CategoryRow(
                 Text("See All", style = MaterialTheme.typography.labelLarge)
             }
         }
-
+        val listState = rememberLazyListState()
         LazyRow(
+            state = listState,
             contentPadding = PaddingValues(horizontal = pad),
             horizontalArrangement = Arrangement.spacedBy(pad) // Increased spacing for a cleaner look
         ) {
@@ -55,5 +62,11 @@ fun CategoryRow(
                 ProductCard(product, onProductClick)
             }
         }
+        Spacer(Modifier.height(pad))
+        HorizontalScrollbar(
+            adapter = rememberScrollbarAdapter(listState),
+            style = defaultMaterialScrollbarStyle(),
+            modifier = Modifier.padding(horizontal = pad)
+        )
     }
 }
