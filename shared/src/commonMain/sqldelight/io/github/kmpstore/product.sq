@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS product (
     price INTEGER NOT NULL,
     currency TEXT NOT NULL DEFAULT 'CAD',
     price_id TEXT NOT NULL,
-    stock INTEGER NOT NULL
+    stock INTEGER
 );
 
 -- Updated to only include product-specific fields

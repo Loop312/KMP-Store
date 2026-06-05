@@ -114,10 +114,11 @@ class CartViewModel(
             itemsToKeep.forEach {
                 //update stock
                 productRepository.refreshProduct(it.product.id)
+                val stock = it.product.stock ?: return@forEach
 
-                if (it.quantity > it.product.stock) {
+                if (it.quantity > stock) {
                     _effects.send(CartUiEffect.ShowSnackbar("${it.product.name} has too many in cart. Stock: ${it.product.stock}, In Cart: ${it.quantity}"))
-                    cartRepository.addToCart(it.product.id, it.product.stock - it.quantity)
+                    cartRepository.addToCart(it.product.id, stock - it.quantity)
                     return@launch
                 }
             }

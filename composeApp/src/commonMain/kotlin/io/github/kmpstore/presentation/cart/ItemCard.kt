@@ -85,12 +85,14 @@ fun ItemCard(
                     color = MaterialTheme.colorScheme.primary,
                     fontWeight = FontWeight.SemiBold
                 )
-                Text(
-                    text = "Stock: ${item.product.stock}",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = if (item.product.stock > 0) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error,
-                    overflow = TextOverflow.Visible
-                )
+                if (item.product.stock != null) {
+                    Text(
+                        text = "Stock: ${item.product.stock}",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = if (item.product.stock!! > 0) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error,
+                        overflow = TextOverflow.Visible
+                    )
+                }
                 Text(
                     text = item.totalPriceFormatted,
                     style = MaterialTheme.typography.bodyLarge,

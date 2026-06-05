@@ -92,14 +92,16 @@ fun ProductCard(
                     fontWeight = FontWeight.SemiBold
                 )
             }
-            Text(
-                text = "Stock: ${product.stock}",
-                modifier = Modifier.padding(12.dp).align(Alignment.BottomEnd).alpha(textAlphaScale),
-                maxLines = 1,
-                style = MaterialTheme.typography.titleSmall,
-                color = if (product.stock > 0) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.error,
-                overflow = TextOverflow.Ellipsis
-            )
+            if (product.stock != null) {
+                Text(
+                    text = "Stock: ${product.stock}",
+                    modifier = Modifier.padding(12.dp).align(Alignment.BottomEnd).alpha(textAlphaScale),
+                    maxLines = 1,
+                    style = MaterialTheme.typography.titleSmall,
+                    color = if (product.stock!! > 0) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.error,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
         }
     }
 }

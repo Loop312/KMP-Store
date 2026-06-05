@@ -7,17 +7,10 @@ import kotlinx.serialization.Serializable
 data class ProductDto(
     val id: String,
     val name: String,
-    val description: String,
+    val description: String?,
+    @SerialName("main_image") val mainImage: String?,
     val price: Long,
-    @SerialName("image_url")val imageUrl: String,
-    val currency: String = "CAD"
-) {
-    constructor(product: io.github.kmpstore.Product) : this(
-        id = product.id,
-        name = product.name,
-        description = product.description ?: "",
-        price = product.price,
-        imageUrl = product.image_url ?: "URL NOT FOUND",
-        currency = product.currency
-    )
-}
+    val currency: String = "CAD",
+    @SerialName("price_id") val priceId: String,
+    val stock: Long? = null,
+)
