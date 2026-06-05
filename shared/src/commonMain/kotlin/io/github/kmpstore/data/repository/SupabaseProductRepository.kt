@@ -5,18 +5,19 @@ import app.cash.sqldelight.coroutines.mapToList
 import app.cash.sqldelight.coroutines.mapToOneOrNull
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.postgrest.from
+import io.github.jan.supabase.postgrest.postgrest
+import io.github.jan.supabase.postgrest.rpc
 import io.github.kmpstore.CategoryQueries
 import io.github.kmpstore.ProductQueries
 import io.github.kmpstore.Category_productsQueries
-import io.github.kmpstore.data.remote.model.CategoryDto
 import io.github.kmpstore.data.remote.model.CategoryProductsDto
-import io.github.kmpstore.data.remote.model.StoreCatalogDto
+import io.github.kmpstore.data.remote.model.StoreSyncDto
+import io.github.kmpstore.data.remote.model.ProductDto
 import io.github.kmpstore.domain.model.Category
 import io.github.kmpstore.domain.model.Product
 import io.github.kmpstore.domain.model.Resource
 import io.github.kmpstore.domain.repository.ProductRepository
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -100,25 +101,14 @@ class SupabaseProductRepository(
     override suspend fun refreshProducts(): Result<Unit> = withContext(Dispatchers.Default) {
         runCatching {
             // 1. Fetch data from Supabase
-            val categoriesDeferred = async {
-                supabase.from("categories").select().decodeList<CategoryDto>()
-            }
-            val junctionsDeferred = async {
-                supabase.from("category_products").select().decodeList<CategoryProductsDto>()
-            }
-            val catalogDeferred = async {
-                supabase.from("store_catalog").select().decodeList<StoreCatalogDto>()
-            }
-            val remoteCategories = categoriesDeferred.await()
-            val remoteJunctions = junctionsDeferred.await()
-            val remoteCatalog = catalogDeferred.await()
-
+            val payload = supabase.postgrest.rpc("get_store_sync_payload")
+                .decodeAs<StoreSyncDto>()
             // 2. Perform Atomic Transaction
             productQueries.transaction {
                 //Clear old junction data to avoid stale relationships
                 categoryProductsQueries.deleteAllCategoryProducts()
 
-                remoteCategories.forEach { category ->
+                payload.categories.forEach { category ->
                     categoryQueries.insertCategory(
                         id = category.id,
                         name = category.name,
@@ -126,7 +116,7 @@ class SupabaseProductRepository(
                         parent_id = category.parentId
                     )
                 }
-                insertCatalogAndJunctions(remoteCatalog, remoteJunctions)
+                insertCatalogAndJunctions(payload.products, payload.junctions)
             }
         }
     }
@@ -139,20 +129,20 @@ class SupabaseProductRepository(
         activeProductFetches.add(productId)
         val result = runCatching {
             // 1. Fetch only the specific product from Supabase
-            val remoteProduct = supabase.from("store_catalog")
-                .select { filter { eq("product_id", productId) } }
-                .decodeSingleOrNull<StoreCatalogDto>()
+            val remoteProduct = supabase.from("products")
+                .select { filter { eq("id", productId) } }
+                .decodeSingleOrNull<ProductDto>()
 
             if (remoteProduct == null) {
                 missingProductIds.add(productId)
                 return@runCatching
             } else {
                 productQueries.insertProduct(
-                    id = remoteProduct.productId,
+                    id = remoteProduct.id,
                     name = remoteProduct.name,
                     description = remoteProduct.description,
                     image_url = remoteProduct.mainImage,
-                    price = remoteProduct.unitAmount,
+                    price = remoteProduct.price,
                     currency = remoteProduct.currency,
                     price_id = remoteProduct.priceId,
                     stock = remoteProduct.stock
@@ -169,57 +159,44 @@ class SupabaseProductRepository(
         }
         activeCategoryFetches.add(categoryId)
         val result = runCatching {
-            val categoryDeferred = async {
-                supabase.from("categories")
-                    .select { filter { eq("id", categoryId) } }
-                    .decodeSingleOrNull<CategoryDto>()
-            }
-            val junctionsDeferred = async {
-                supabase.from("category_products")
-                    .select { filter { eq("category_id", categoryId) } }
-                    .decodeList<CategoryProductsDto>()
-            }
-            val catalogDeferred = async {
-                supabase.from("store_catalog")
-                    .select { filter { eq("category_id", categoryId) } }
-                    .decodeList<StoreCatalogDto>()
-            }
+            val payload = supabase.postgrest.rpc(
+                function = "get_category_sync_payload",
+                parameters = mapOf("requested_category_id" to categoryId)
+            ).decodeSingle<StoreSyncDto>()
 
-            val remoteCategory = categoryDeferred.await()
-            val remoteJunctions = junctionsDeferred.await()
-            val remoteCatalog = catalogDeferred.await()
-
-            if (remoteCategory == null) {
+            if (payload.categories.isEmpty()) {
                 missingCategoryIds.add(categoryId)
                 return@withContext Result.success(Unit)
             }
             productQueries.transaction {
                 categoryProductsQueries.deleteCategoryProductsByCategoryId(categoryId)
                 // Update local category table
-                categoryQueries.insertCategory(
-                    id = remoteCategory.id,
-                    name = remoteCategory.name,
-                    slug = remoteCategory.slug,
-                    parent_id = remoteCategory.parentId
-                )
-                insertCatalogAndJunctions(remoteCatalog, remoteJunctions)
+                payload.categories.forEach { category ->
+                    categoryQueries.insertCategory(
+                        id = category.id,
+                        name = category.name,
+                        slug = category.slug,
+                        parent_id = category.parentId
+                    )
+                }
+                insertCatalogAndJunctions(payload.products, payload.junctions)
             }
         }
         activeCategoryFetches.remove(categoryId)
         result
     }
 
-    private suspend fun insertCatalogAndJunctions(catalog: List<StoreCatalogDto>, junctions: List<CategoryProductsDto>) {
-        catalog.forEach { item ->
+    private suspend fun insertCatalogAndJunctions(products: List<ProductDto>, junctions: List<CategoryProductsDto>) {
+        products.forEach { product ->
             productQueries.insertProduct(
-                id = item.productId,
-                name = item.name,
-                description = item.description,
-                image_url = item.mainImage,
-                price = item.unitAmount,
-                currency = item.currency,
-                price_id = item.priceId,
-                stock = item.stock
+                id = product.id,
+                name = product.name,
+                description = product.description,
+                image_url = product.mainImage,
+                price = product.price,
+                currency = product.currency,
+                price_id = product.priceId,
+                stock = product.stock
             )
         }
         junctions.forEach { item ->
