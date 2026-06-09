@@ -14,10 +14,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import io.github.kmpstore.pad
 import io.github.kmpstore.theme.ThemeToggleButton
-import kmpstore.composeapp.generated.resources.Res
-import kmpstore.composeapp.generated.resources.account_circle
-import kmpstore.composeapp.generated.resources.add_to_cart
-import kmpstore.composeapp.generated.resources.shopping_cart
+import kmpstore.app_customer.generated.resources.Res
+import kmpstore.app_customer.generated.resources.account_circle
+import kmpstore.app_customer.generated.resources.add_to_cart
+import kmpstore.app_customer.generated.resources.shopping_cart
 import org.jetbrains.compose.resources.painterResource
 
 @OptIn(ExperimentalMaterial3Api::class)

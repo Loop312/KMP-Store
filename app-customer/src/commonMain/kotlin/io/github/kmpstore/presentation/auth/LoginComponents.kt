@@ -16,8 +16,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import io.github.jan.supabase.auth.providers.OAuthProvider
-import kmpstore.composeapp.generated.resources.Res
-import kmpstore.composeapp.generated.resources.compose_multiplatform
+import kmpstore.app_customer.generated.resources.Res
+import kmpstore.app_customer.generated.resources.compose_multiplatform
 import org.jetbrains.compose.resources.painterResource
 
 @Composable

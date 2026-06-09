@@ -26,8 +26,8 @@ import io.github.kmpstore.IMAGE_LOADING_ERROR
 import io.github.kmpstore.domain.model.CartItem
 import io.github.kmpstore.pad
 import io.github.kmpstore.roundedCornerShape
-import kmpstore.composeapp.generated.resources.Res
-import kmpstore.composeapp.generated.resources.remove_shopping_cart
+import kmpstore.app_customer.generated.resources.Res
+import kmpstore.app_customer.generated.resources.remove_shopping_cart
 
 @Composable
 fun ItemCard(

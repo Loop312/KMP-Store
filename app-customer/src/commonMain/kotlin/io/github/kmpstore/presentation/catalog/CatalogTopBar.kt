@@ -24,10 +24,10 @@ import io.github.kmpstore.STORE_NAME
 import io.github.kmpstore.domain.model.Product
 import io.github.kmpstore.pad
 import io.github.kmpstore.theme.ThemeToggleButton
-import kmpstore.composeapp.generated.resources.Res
-import kmpstore.composeapp.generated.resources.account_circle
-import kmpstore.composeapp.generated.resources.ic_search
-import kmpstore.composeapp.generated.resources.shopping_cart
+import kmpstore.app_customer.generated.resources.Res
+import kmpstore.app_customer.generated.resources.account_circle
+import kmpstore.app_customer.generated.resources.ic_search
+import kmpstore.app_customer.generated.resources.shopping_cart
 import org.jetbrains.compose.resources.painterResource
 
 @OptIn(ExperimentalMaterial3Api::class)

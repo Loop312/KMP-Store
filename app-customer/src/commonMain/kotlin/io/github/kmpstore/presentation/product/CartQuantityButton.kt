@@ -23,9 +23,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import kmpstore.composeapp.generated.resources.Res
-import kmpstore.composeapp.generated.resources.add_to_cart
-import kmpstore.composeapp.generated.resources.remove_shopping_cart
+import kmpstore.app_customer.generated.resources.Res
+import kmpstore.app_customer.generated.resources.add_to_cart
+import kmpstore.app_customer.generated.resources.remove_shopping_cart
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
