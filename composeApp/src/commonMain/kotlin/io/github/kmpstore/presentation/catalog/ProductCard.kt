@@ -1,12 +1,14 @@
 package io.github.kmpstore.presentation.catalog
 
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -43,7 +45,7 @@ fun ProductCard(
         label = "Card Pop Scale"
     )
     val textAlphaScale by animateFloatAsState(
-        targetValue = if (isHovered) .12f else 1f,
+        targetValue = if (isHovered) .12f else .9f,
         label = "Card Text Alpha"
     )
 
@@ -75,21 +77,27 @@ fun ProductCard(
                 }
             )
             Column(
-                modifier = Modifier.padding(12.dp).align(Alignment.BottomStart).alpha(textAlphaScale)
+                modifier = Modifier
+                    .align(Alignment.BottomStart)
+                    .alpha(textAlphaScale)
+                    .background(MaterialTheme.colorScheme.surface)
+                    .fillMaxWidth(),
             ) {
                 Text(
                     text = product.name,
                     maxLines = 1,
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Medium,
-                    overflow = TextOverflow.Ellipsis
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.padding(start = 12.dp, top = 8.dp)
                 )
 
                 Text(
                     text = product.formattedPrice,
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.primary,
-                    fontWeight = FontWeight.SemiBold
+                    fontWeight = FontWeight.SemiBold,
+                    modifier = Modifier.padding(start = 12.dp, bottom = 8.dp)
                 )
             }
             if (product.stock != null) {

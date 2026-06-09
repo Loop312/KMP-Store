@@ -8,6 +8,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -15,8 +16,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import io.github.kmpstore.presentation.ErrorMessage
+import io.github.kmpstore.util.scrollbarStyle
 import io.github.oikvpqya.compose.fastscroller.VerticalScrollbar
-import io.github.oikvpqya.compose.fastscroller.defaultScrollbarStyle
 import io.github.oikvpqya.compose.fastscroller.rememberScrollbarAdapter
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -65,7 +66,7 @@ fun CatalogScreen(
                     }
                     VerticalScrollbar(
                         adapter = rememberScrollbarAdapter(listState),
-                        style = defaultScrollbarStyle(),
+                        style = scrollbarStyle(MaterialTheme.colorScheme.primary),
                         modifier = Modifier.align(Alignment.TopEnd)
                     )
                 }

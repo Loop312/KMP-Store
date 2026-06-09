@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import io.github.kmpstore.STORE_NAME
 import io.github.kmpstore.domain.model.Product
 import io.github.kmpstore.pad
+import io.github.kmpstore.theme.ThemeToggleButton
 import kmpstore.composeapp.generated.resources.Res
 import kmpstore.composeapp.generated.resources.account_circle
 import kmpstore.composeapp.generated.resources.ic_search
@@ -92,6 +93,8 @@ internal fun CatalogTopBar(
                 modifier = Modifier.height(64.dp) // Standard TopAppBar height line-up
             ) {
                 if (!isExpanded) {
+                    ThemeToggleButton(Modifier.size(32.dp))
+                    Spacer(Modifier.width(pad / 2))
                     Icon(
                         painter = painterResource(Res.drawable.shopping_cart),
                         contentDescription = "shopping_cart",

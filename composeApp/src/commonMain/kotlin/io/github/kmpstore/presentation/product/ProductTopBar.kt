@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import io.github.kmpstore.pad
+import io.github.kmpstore.theme.ThemeToggleButton
 import kmpstore.composeapp.generated.resources.Res
 import kmpstore.composeapp.generated.resources.account_circle
 import kmpstore.composeapp.generated.resources.add_to_cart
@@ -30,6 +31,7 @@ internal fun ProductTopBar(
     TopAppBar(
         title = { Text(productName, overflow = TextOverflow.Ellipsis) },
         actions = {
+            ThemeToggleButton(Modifier.size(32.dp))
             Icon(painterResource(Res.drawable.add_to_cart), "add_to_cart", Modifier.size(32.dp).clickable(onClick = onAddToCart))
             Spacer(Modifier.width(pad/2))
             Icon(painterResource(Res.drawable.shopping_cart), "shopping_cart", Modifier.size(32.dp).clickable(onClick = onCartClick))

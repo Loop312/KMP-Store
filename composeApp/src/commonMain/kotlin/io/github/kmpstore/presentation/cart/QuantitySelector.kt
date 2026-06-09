@@ -83,7 +83,7 @@ private fun QuantityControlNode(
             .hoverable(interactionSource)
             .clickable(onClick = onClick)
             .border(
-                width = if (isHovered) 2.dp else 1.dp, // Only show border on hover
+                width = if (isHovered) 3.dp else 2.dp, // Only show border on hover
                 color = color,
                 shape = RoundedCornerShape(8.dp)
             ),

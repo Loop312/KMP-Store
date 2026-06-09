@@ -1,6 +1,7 @@
 package io.github.kmpstore
 
 import androidx.compose.foundation.border
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,6 +26,8 @@ import io.github.kmpstore.di.catalogModule
 import io.github.kmpstore.di.sqldelightModule
 import io.github.kmpstore.navigation.Nav
 import io.github.kmpstore.shared.Database
+import io.github.kmpstore.theme.AppTheme
+import io.github.kmpstore.theme.isDarkTheme
 import org.koin.compose.KoinApplication
 import org.koin.compose.getKoin
 import org.koin.dsl.koinConfiguration
@@ -34,6 +37,7 @@ import org.koin.dsl.module
 @Preview
 fun App() {
     var isDbReady by remember { mutableStateOf(false) }
+    isDarkTheme = isSystemInDarkTheme()
     KoinApplication(
         koinConfiguration {
             modules(
@@ -52,7 +56,7 @@ fun App() {
             isDbReady = true
         }
         setSingletonImageLoaderFactory { koin.get<ImageLoader>() }
-        MaterialTheme {
+        AppTheme(isDarkTheme) {
             var verification by remember { mutableStateOf(VERIFICATION) }
             if (verification) {
                 Box(Modifier.fillMaxSize()) {
