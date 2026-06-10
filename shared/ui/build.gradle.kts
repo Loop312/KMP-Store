@@ -1,4 +1,3 @@
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -31,13 +30,11 @@ kotlin {
 
     js {
         browser()
-        binaries.executable()
     }
 
     @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
         browser()
-        binaries.executable()
     }
 
     sourceSets {
@@ -54,18 +51,13 @@ kotlin {
             implementation(libs.compose.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
+            implementation(libs.coil.compose)
+            implementation(libs.coil.network)
+            implementation("io.github.oikvpqya.compose.fastscroller:fastscroller-core:0.3.2")
             implementation(projects.shared.core)
-            implementation(projects.shared.ui)
             implementation(project.dependencies.platform(libs.koin.bom))
             implementation(libs.koin.compose)
             implementation(libs.koin.compose.viewmodel)
-            implementation(libs.coil.compose)
-            implementation(libs.coil.network)
-            implementation(libs.jetbrains.navigation3.ui)
-            implementation(libs.jetbrains.material3.adaptiveNavigation3)
-            implementation(libs.jetbrains.lifecycle.viewmodelNavigation3)
-            implementation("io.github.oikvpqya.compose.fastscroller:fastscroller-core:0.3.2")
-            implementation("io.github.oikvpqya.compose.fastscroller:fastscroller-material3:0.3.2")
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -74,36 +66,18 @@ kotlin {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutinesSwing)
         }
-        webMain.dependencies {
-            implementation("com.github.terrakok:navigation3-browser:0.3.1")
-        }
     }
 }
 
 android {
-    namespace = "io.github.kmpstore"
+    namespace = "io.github.kmpstore.shared.ui"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
-
-    defaultConfig {
-        applicationId = "io.github.kmpstore"
-        minSdk = libs.versions.android.minSdk.get().toInt()
-        targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 1
-        versionName = "1.0"
-    }
-    packaging {
-        resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
-        }
-    }
-    buildTypes {
-        getByName("release") {
-            isMinifyEnabled = false
-        }
-    }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
+    }
+    defaultConfig {
+        minSdk = libs.versions.android.minSdk.get().toInt()
     }
 }
 
@@ -111,14 +85,6 @@ dependencies {
     debugImplementation(libs.compose.uiTooling)
 }
 
-compose.desktop {
-    application {
-        mainClass = "io.github.kmpstore.MainKt"
-
-        nativeDistributions {
-            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "io.github.kmpstore"
-            packageVersion = "1.0.0"
-        }
-    }
+compose.resources {
+    publicResClass = true
 }

@@ -4,9 +4,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import kmpstore.app_customer.generated.resources.Res
-import kmpstore.app_customer.generated.resources.dark_mode
-import kmpstore.app_customer.generated.resources.light_mode
+import kmpstore.shared.ui.generated.resources.Res
+import kmpstore.shared.ui.generated.resources.dark_mode
+import kmpstore.shared.ui.generated.resources.light_mode
 import org.jetbrains.compose.resources.painterResource
 
 @Composable

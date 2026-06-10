@@ -33,5 +33,7 @@ plugins {
 }
 
 include(":app-customer")
+include(":app-operator")
 include(":server")
 include(":shared:core")
+include(":shared:ui")
