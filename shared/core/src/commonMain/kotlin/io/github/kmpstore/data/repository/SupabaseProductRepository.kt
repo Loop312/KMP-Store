@@ -98,6 +98,13 @@ class SupabaseProductRepository(
             }.onStart { refreshProduct(id) }
     }
 
+    override suspend fun getProductsByPriceIds(priceIds: List<String>): Flow<List<Product>> {
+        return productQueries.selectProductsByPriceIds(priceIds)
+            .asFlow()
+            .mapToList(Dispatchers.Default)
+            .map { list -> list.map { Product(it) } }
+    }
+
     override suspend fun refreshProducts(): Result<Unit> = withContext(Dispatchers.Default) {
         runCatching {
             // 1. Fetch data from Supabase
