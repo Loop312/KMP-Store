@@ -12,6 +12,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -39,7 +40,7 @@ fun OAuthButton(provider: OAuthProvider, onClick: () -> Unit) {
 
 @Composable
 fun AuthDivider() {
-    Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
         HorizontalDivider(Modifier.weight(1f))
         Text(" Or continue with ", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
         HorizontalDivider(Modifier.weight(1f))
