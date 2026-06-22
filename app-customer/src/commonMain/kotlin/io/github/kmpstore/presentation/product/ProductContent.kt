@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import io.github.kmpstore.domain.model.Product
+import io.github.kmpstore.presentation.ProductImage
 
 @Composable
 internal fun ProductContent(product: Product, cartQuantity: Int, onIntent: (ProductIntent) -> Unit) {

@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import io.github.kmpstore.domain.model.Resource
 import io.github.kmpstore.pad
+import io.github.kmpstore.presentation.ProductCard
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 

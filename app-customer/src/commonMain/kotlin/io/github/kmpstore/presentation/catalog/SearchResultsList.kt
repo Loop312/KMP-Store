@@ -17,7 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import io.github.kmpstore.domain.model.Product
 import io.github.kmpstore.pad
-import io.github.kmpstore.presentation.product.ProductImage
+import io.github.kmpstore.presentation.ProductImage
 
 @Composable
 fun SearchResultsList(
