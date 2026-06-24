@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import io.github.kmpstore.domain.model.Category
 import io.github.kmpstore.pad
 import io.github.kmpstore.presentation.ProductCard
@@ -43,10 +44,13 @@ fun CategoryRow(
             Text(
                 text = category.name,
                 style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.weight(1f)
             )
 
-            TextButton(onClick = { onCategoryClick(category.id, category.name) }) {
+            TextButton(onClick = { onCategoryClick(category.id, category.name) }, Modifier.weight(.25f)) {
                 Text("See All", style = MaterialTheme.typography.labelLarge)
             }
         }

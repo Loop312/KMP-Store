@@ -19,6 +19,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import io.github.kmpstore.STORE_NAME
 import io.github.kmpstore.domain.model.Product
@@ -50,7 +51,7 @@ internal fun CatalogTopBar(
             ) {
                 if (!isExpanded) {
                     Text(
-                        text = "$STORE_NAME's Catalog",
+                        text = STORE_NAME,
                         style = MaterialTheme.typography.headlineMedium,
                         modifier = Modifier.padding(end = pad) // Gives the SearchBar breathing room
                     )
@@ -64,13 +65,13 @@ internal fun CatalogTopBar(
                             onSearch = { searchResults.firstOrNull()?.id?.let { p1 -> onProductClick(p1) } },
                             expanded = isExpanded,
                             onExpandedChange = {},
-                            placeholder = { Text("Search products...") }
+                            placeholder = { Text(text = "Search products...", overflow = TextOverflow.Ellipsis, maxLines = 1) }
                         )
                     },
                     expanded = isExpanded,
                     onExpandedChange = {},
                     modifier = Modifier
-                        .then(if (isExpanded) Modifier.fillMaxWidth() else Modifier.width(400.dp))
+                        .then(if (isExpanded) Modifier.fillMaxWidth() else Modifier.weight(1f, false))
                         .padding(vertical = 4.dp),
                     content = {
                         SearchResultsList(
@@ -93,6 +94,7 @@ internal fun CatalogTopBar(
                 modifier = Modifier.height(64.dp) // Standard TopAppBar height line-up
             ) {
                 if (!isExpanded) {
+                    Spacer(Modifier.width(pad / 2))
                     ThemeToggleButton(Modifier.size(32.dp))
                     Spacer(Modifier.width(pad / 2))
                     Icon(

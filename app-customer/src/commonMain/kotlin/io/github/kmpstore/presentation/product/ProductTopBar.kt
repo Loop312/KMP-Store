@@ -32,6 +32,7 @@ internal fun ProductTopBar(
         title = { Text(productName, overflow = TextOverflow.Ellipsis) },
         actions = {
             ThemeToggleButton(Modifier.size(32.dp))
+            Spacer(Modifier.width(pad/2))
             Icon(painterResource(Res.drawable.add_to_cart), "add_to_cart", Modifier.size(32.dp).clickable(onClick = onAddToCart))
             Spacer(Modifier.width(pad/2))
             Icon(painterResource(Res.drawable.shopping_cart), "shopping_cart", Modifier.size(32.dp).clickable(onClick = onCartClick))
