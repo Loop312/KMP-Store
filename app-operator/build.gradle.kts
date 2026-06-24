@@ -83,11 +83,11 @@ kotlin {
 }
 
 android {
-    namespace = "io.github.kmpstore"
+    namespace = "io.github.kmpstore.operator"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
-        applicationId = "io.github.kmpstore"
+        applicationId = "io.github.kmpstore.operator"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1

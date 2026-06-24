@@ -82,7 +82,7 @@ kotlin {
 }
 
 android {
-    namespace = "io.github.kmpstore.shared"
+    namespace = "io.github.kmpstore.shared.operator"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11

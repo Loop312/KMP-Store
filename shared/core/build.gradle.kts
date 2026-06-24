@@ -85,7 +85,7 @@ kotlin {
 }
 
 android {
-    namespace = "io.github.kmpstore.shared"
+    namespace = "io.github.kmpstore.shared.core"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
