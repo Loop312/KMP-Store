@@ -142,11 +142,6 @@ buildkonfig {
             props.getProperty("MAX_CART_SIZE") ?: "25"
         )
         buildConfigField(
-            BOOLEAN,
-            "VERIFICATION",
-            props.getProperty("VERIFICATION") ?: "false"
-        )
-        buildConfigField(
             STRING,
             "VERIFICATION_MESSAGE",
             props.getProperty("VERIFICATION_MESSAGE") ?: ""

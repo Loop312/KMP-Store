@@ -57,7 +57,7 @@ fun App() {
         }
         setSingletonImageLoaderFactory { koin.get<ImageLoader>() }
         AppTheme(isDarkTheme) {
-            var verification by remember { mutableStateOf(VERIFICATION) }
+            var verification by remember { mutableStateOf(VERIFICATION_MESSAGE != "") }
             if (verification) {
                 Box(Modifier.fillMaxSize()) {
                     Column(Modifier
