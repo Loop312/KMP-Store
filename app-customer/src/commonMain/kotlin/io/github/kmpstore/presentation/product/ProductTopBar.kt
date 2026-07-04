@@ -37,8 +37,8 @@ internal fun ProductTopBar(
             Spacer(Modifier.width(pad/2))
             Icon(painterResource(Res.drawable.shopping_cart), "shopping_cart", Modifier.size(32.dp).clickable(onClick = onCartClick))
             Spacer(Modifier.width(pad/2))
-            Icon(painterResource(Res.drawable.account_circle), "account", Modifier.size(32.dp).clickable(onClick = onAccountClick))
-            Spacer(Modifier.width(pad/2))
+//            Icon(painterResource(Res.drawable.account_circle), "account", Modifier.size(32.dp).clickable(onClick = onAccountClick))
+//            Spacer(Modifier.width(pad/2))
         }
     )
 }

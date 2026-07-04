@@ -105,11 +105,11 @@ internal fun CatalogTopBar(
                             .clickable(onClick = onCartClick)
                     )
                     Spacer(Modifier.width(pad / 2))
-                    Icon(
-                        painter = painterResource(Res.drawable.account_circle),
-                        contentDescription = "account",
-                        modifier = Modifier.size(32.dp)
-                    )
+//                    Icon(
+//                        painter = painterResource(Res.drawable.account_circle),
+//                        contentDescription = "account",
+//                        modifier = Modifier.size(32.dp)
+//                    )
                 }
             }
         }
