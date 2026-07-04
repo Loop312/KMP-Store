@@ -10,6 +10,8 @@ plugins {
     alias(libs.plugins.composeHotReload)
 }
 
+val targetDomain = project.findProperty("domain")?.toString() ?: "kmpstore.github.io"
+
 kotlin {
     androidTarget {
         compilerOptions {
@@ -83,11 +85,11 @@ kotlin {
 }
 
 android {
-    namespace = "io.github.kmpstore.operator"
+    namespace = targetDomain.split(".").reversed().joinToString(".") + ".operator"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
-        applicationId = "io.github.kmpstore.operator"
+        applicationId = targetDomain.split(".").reversed().joinToString(".") + ".operator"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
@@ -119,7 +121,7 @@ compose.desktop {
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "io.github.kmpstore"
+            packageName = targetDomain.substringBefore(".") + "Operator"
             packageVersion = "1.0.0"
         }
     }
