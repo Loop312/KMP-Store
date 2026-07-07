@@ -15,7 +15,6 @@ import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,9 +25,9 @@ import io.github.kmpstore.domain.model.Product
 import io.github.kmpstore.pad
 import io.github.kmpstore.theme.ThemeToggleButton
 import kmpstore.shared.ui.generated.resources.Res
-import kmpstore.shared.ui.generated.resources.account_circle
 import kmpstore.shared.ui.generated.resources.ic_search
 import kmpstore.shared.ui.generated.resources.shopping_cart
+import kmpstore.shared.ui.generated.resources.menu
 import org.jetbrains.compose.resources.painterResource
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -38,11 +37,21 @@ internal fun CatalogTopBar(
     searchResults: List<Product>,
     onCartClick: () -> Unit,
     onProductClick: (String) -> Unit,
-    onIntent: (CatalogIntent) -> Unit
+    onCatalogIntent: (CatalogIntent) -> Unit,
+    onDrawerClick: () -> Unit
 ) {
     val isExpanded = searchQuery.isNotBlank()
 
     TopAppBar(
+        navigationIcon = {
+            Icon(
+                painter = painterResource(Res.drawable.menu),
+                contentDescription = "Open navigation menu",
+                modifier = Modifier
+                    .size(32.dp)
+                    .clickable(onClick = onDrawerClick)
+            )
+        },
         title = {
             // Use Alignment.CenterVertically to force the Title Text and SearchBar to line up perfectly
             Row(
@@ -61,7 +70,7 @@ internal fun CatalogTopBar(
                         SearchBarDefaults.InputField(
                             leadingIcon = { Icon(painterResource(Res.drawable.ic_search), null) },
                             query = searchQuery,
-                            onQueryChange = { onIntent(CatalogIntent.OnQueryChange(it)) },
+                            onQueryChange = { onCatalogIntent(CatalogIntent.OnQueryChange(it)) },
                             onSearch = { searchResults.firstOrNull()?.id?.let { p1 -> onProductClick(p1) } },
                             expanded = isExpanded,
                             onExpandedChange = {},
@@ -83,10 +92,9 @@ internal fun CatalogTopBar(
                 )
             }
         },
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.background
-        ),
-        modifier = Modifier.padding(horizontal = pad),
+//        colors = TopAppBarDefaults.topAppBarColors(
+//            containerColor = MaterialTheme.colorScheme.background
+//        ),
         actions = {
             // Center the action icons perfectly relative to the TopAppBar content height
             Row(

@@ -16,6 +16,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import io.github.kmpstore.presentation.ErrorMessage
+import io.github.kmpstore.presentation.drawer.DrawerCategoryTree
+import io.github.kmpstore.presentation.drawer.DrawerIntent
+import io.github.kmpstore.presentation.drawer.DrawerViewModel
 import io.github.kmpstore.util.scrollbarStyle
 import io.github.oikvpqya.compose.fastscroller.VerticalScrollbar
 import io.github.oikvpqya.compose.fastscroller.rememberScrollbarAdapter
@@ -24,13 +27,34 @@ import org.koin.compose.viewmodel.koinViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CatalogScreen(
+    catalogViewModel: CatalogViewModel = koinViewModel(),
+    drawerViewModel: DrawerViewModel = koinViewModel(),
+    onCategoryClick: (String, String) -> Unit,
+    onProductClick: (String) -> Unit,
+    onCartClick: () -> Unit,
+) {
+    DrawerCategoryTree(
+        onCategoryClick = { id, name -> onCategoryClick(id, name) },
+        content = {
+            CatalogScreenScaffold(
+                viewModel = catalogViewModel,
+                onDrawerClick = { drawerViewModel.onIntent(DrawerIntent.OpenDrawer) },
+                onCategoryClick = onCategoryClick,
+                onProductClick = onProductClick,
+                onCartClick = onCartClick
+            )
+        }
+    )
+}
+@Composable
+private fun CatalogScreenScaffold(
     viewModel: CatalogViewModel = koinViewModel(),
+    onDrawerClick: () -> Unit,
     onCategoryClick: (String, String) -> Unit,
     onProductClick: (String) -> Unit,
     onCartClick: () -> Unit,
 ) {
     val state by viewModel.state.collectAsState()
-
     Scaffold(
         topBar = {
             CatalogTopBar(
@@ -38,7 +62,8 @@ fun CatalogScreen(
                 searchResults = state.searchResults,
                 onCartClick = onCartClick,
                 onProductClick = onProductClick,
-                onIntent = viewModel::onIntent
+                onCatalogIntent = viewModel::onIntent,
+                onDrawerClick = onDrawerClick,
             )
         }
     ) { paddingValues ->

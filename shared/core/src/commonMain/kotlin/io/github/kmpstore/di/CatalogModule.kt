@@ -11,6 +11,7 @@ import io.github.kmpstore.domain.repository.ProductRepository
 import io.github.kmpstore.presentation.cart.CartViewModel
 import io.github.kmpstore.presentation.catalog.CatalogViewModel
 import io.github.kmpstore.presentation.catalog.CategoryViewModel
+import io.github.kmpstore.presentation.drawer.DrawerViewModel
 import io.github.kmpstore.presentation.product.ProductViewModel
 import io.ktor.client.HttpClient
 import org.koin.dsl.module
@@ -35,6 +36,7 @@ val catalogModule = module {
     factory<CategoryViewModel> { (categoryId: String) ->
         CategoryViewModel(categoryId = categoryId, repository = get())
     }
+    factory<DrawerViewModel> { DrawerViewModel(get()) }
     factory<ProductViewModel> { (productId: String) ->
         ProductViewModel(productId = productId, productRepository = get(), cartRepository = get())
     }
