@@ -47,10 +47,10 @@ fun CategoryRow(
                 fontWeight = FontWeight.Bold,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f, false)
             )
 
-            TextButton(onClick = { onCategoryClick(category.id, category.name) }, Modifier.weight(.25f)) {
+            TextButton(onClick = { onCategoryClick(category.id, category.name) }) {
                 Text("See All", style = MaterialTheme.typography.labelLarge)
             }
         }
