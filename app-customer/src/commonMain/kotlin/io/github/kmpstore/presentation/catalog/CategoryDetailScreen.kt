@@ -2,6 +2,7 @@ package io.github.kmpstore.presentation.catalog
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -43,8 +44,8 @@ fun CategoryDetailScreen(
                 is Resource.Success -> {
                     val products = resource.data
                     LazyVerticalGrid(
-                        columns = GridCells.FixedSize(160.dp),//.Adaptive(minSize = 180.dp),
-                        contentPadding = padding,
+                        columns = GridCells.FixedSize(180.dp),
+                        contentPadding = PaddingValues(pad/2),
                         horizontalArrangement = Arrangement.spacedBy(pad),
                         verticalArrangement = Arrangement.spacedBy(pad),
                         modifier = Modifier.padding(pad).fillMaxSize(),
