@@ -19,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import io.github.kmpstore.domain.model.Resource
+import io.github.kmpstore.presentation.cart.CartViewModel
 import io.github.kmpstore.roundedCornerShape
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -27,10 +28,12 @@ import org.koin.core.parameter.parametersOf
 fun ProductScreen(
     id: String,
     onCartClick: () -> Unit,
-    viewModel: ProductViewModel = koinViewModel(key = id) { parametersOf(id) }
+    viewModel: ProductViewModel = koinViewModel(key = id) { parametersOf(id) },
+    cartViewModel: CartViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsState()
     val productResource = state.product
+    val cartSize by cartViewModel.cartSize.collectAsState()
 
     // for telling user they've added it to cart
     val snackbarHostState = remember { SnackbarHostState() }
@@ -50,6 +53,7 @@ fun ProductScreen(
         topBar = {
             ProductTopBar(
                 productName = if (productResource is Resource.Success) productResource.data.name else "Loading...",
+                cartSize = cartSize,
                 onAddToCart = { viewModel.addProductToCart(1) },
                 onCartClick = onCartClick,
                 onAccountClick = {},

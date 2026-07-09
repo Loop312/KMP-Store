@@ -16,6 +16,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import io.github.kmpstore.presentation.ErrorMessage
+import io.github.kmpstore.presentation.cart.CartViewModel
 import io.github.kmpstore.presentation.drawer.DrawerCategoryTree
 import io.github.kmpstore.presentation.drawer.DrawerIntent
 import io.github.kmpstore.presentation.drawer.DrawerViewModel
@@ -29,15 +30,18 @@ import org.koin.compose.viewmodel.koinViewModel
 fun CatalogScreen(
     catalogViewModel: CatalogViewModel = koinViewModel(),
     drawerViewModel: DrawerViewModel = koinViewModel(),
+    cartViewModel: CartViewModel = koinViewModel(),
     onCategoryClick: (String, String) -> Unit,
     onProductClick: (String) -> Unit,
     onCartClick: () -> Unit,
 ) {
+    val cartSize by cartViewModel.cartSize.collectAsState()
     DrawerCategoryTree(
         onCategoryClick = { id, name -> onCategoryClick(id, name) },
         content = {
             CatalogScreenScaffold(
                 viewModel = catalogViewModel,
+                cartSize = cartSize,
                 onDrawerClick = { drawerViewModel.onIntent(DrawerIntent.OpenDrawer) },
                 onCategoryClick = onCategoryClick,
                 onProductClick = onProductClick,
@@ -49,6 +53,7 @@ fun CatalogScreen(
 @Composable
 private fun CatalogScreenScaffold(
     viewModel: CatalogViewModel = koinViewModel(),
+    cartSize: Int,
     onDrawerClick: () -> Unit,
     onCategoryClick: (String, String) -> Unit,
     onProductClick: (String) -> Unit,
@@ -60,6 +65,7 @@ private fun CatalogScreenScaffold(
             CatalogTopBar(
                 searchQuery = state.searchQuery,
                 searchResults = state.searchResults,
+                cartSize = cartSize,
                 onCartClick = onCartClick,
                 onProductClick = onProductClick,
                 onCatalogIntent = viewModel::onIntent,

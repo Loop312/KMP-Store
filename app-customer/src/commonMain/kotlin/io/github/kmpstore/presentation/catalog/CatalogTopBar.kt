@@ -23,10 +23,10 @@ import androidx.compose.ui.unit.dp
 import io.github.kmpstore.STORE_NAME
 import io.github.kmpstore.domain.model.Product
 import io.github.kmpstore.pad
+import io.github.kmpstore.presentation.util.CartButton
 import io.github.kmpstore.theme.ThemeToggleButton
 import kmpstore.shared.ui.generated.resources.Res
 import kmpstore.shared.ui.generated.resources.ic_search
-import kmpstore.shared.ui.generated.resources.shopping_cart
 import kmpstore.shared.ui.generated.resources.menu
 import org.jetbrains.compose.resources.painterResource
 
@@ -35,6 +35,7 @@ import org.jetbrains.compose.resources.painterResource
 internal fun CatalogTopBar(
     searchQuery: String,
     searchResults: List<Product>,
+    cartSize: Int,
     onCartClick: () -> Unit,
     onProductClick: (String) -> Unit,
     onCatalogIntent: (CatalogIntent) -> Unit,
@@ -105,13 +106,7 @@ internal fun CatalogTopBar(
                     Spacer(Modifier.width(pad / 2))
                     ThemeToggleButton(Modifier.size(32.dp))
                     Spacer(Modifier.width(pad / 2))
-                    Icon(
-                        painter = painterResource(Res.drawable.shopping_cart),
-                        contentDescription = "shopping_cart",
-                        modifier = Modifier
-                            .size(32.dp)
-                            .clickable(onClick = onCartClick)
-                    )
+                    CartButton(cartSize = cartSize, onClick = onCartClick)
                     Spacer(Modifier.width(pad / 2))
 //                    Icon(
 //                        painter = painterResource(Res.drawable.account_circle),
