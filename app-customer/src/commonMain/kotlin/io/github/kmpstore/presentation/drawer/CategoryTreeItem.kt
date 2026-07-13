@@ -47,8 +47,8 @@ internal fun CategoryTreeItem(
 //                        val intent = if (isExpanded) DrawerIntent.CloseCategory(category) else DrawerIntent.OpenCategory(category)
 //                        onIntent(intent)
 //                    } else {
-                    onCategoryClick(category.id, category.name)
                     onIntent(DrawerIntent.CloseDrawer) // Close drawer automatically on final selection
+                    onCategoryClick(category.id, category.name)
 //                    }
                 }
                 .padding(horizontal = 16.dp, vertical = 12.dp)

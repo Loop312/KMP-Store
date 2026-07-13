@@ -29,9 +29,11 @@ fun CategoryTreeDrawer(
             // Intercept manual swipes/scrim clicks to notify the ViewModel
             if (drawerValue == DrawerValue.Closed) {
                 viewModel.onIntent(DrawerIntent.CloseDrawer)
-            } else {
-                viewModel.onIntent(DrawerIntent.OpenDrawer)
             }
+            // causes drawer to remain open when screen is changed and drawer is also on that screen
+//            else if (drawerValue == DrawerValue.Open) {
+//                viewModel.onIntent(DrawerIntent.OpenDrawer)
+//            }
             true
         }
     )

@@ -48,7 +48,10 @@ fun Nav() {
                 CategoryDetailScreen(
                     categoryId = route.categoryId,
                     categoryName = route.categoryName,
-                    onProductClick = onProductClick
+                    onProductClick = onProductClick,
+                    onCategoryClick = { id, name ->
+                        backStack.add(Route.CategoryDetail(id, name))
+                    }
                 )
             }
             entry<Route.ProductDetail> { route ->
