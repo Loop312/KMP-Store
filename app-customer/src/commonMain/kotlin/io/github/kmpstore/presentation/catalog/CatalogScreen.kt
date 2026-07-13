@@ -17,7 +17,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import io.github.kmpstore.presentation.ErrorMessage
 import io.github.kmpstore.presentation.cart.CartViewModel
-import io.github.kmpstore.presentation.drawer.DrawerCategoryTree
+import io.github.kmpstore.presentation.drawer.CategoryTreeDrawer
 import io.github.kmpstore.presentation.drawer.DrawerIntent
 import io.github.kmpstore.presentation.drawer.DrawerViewModel
 import io.github.kmpstore.util.scrollbarStyle
@@ -36,7 +36,7 @@ fun CatalogScreen(
     onCartClick: () -> Unit,
 ) {
     val cartSize by cartViewModel.cartSize.collectAsState()
-    DrawerCategoryTree(
+    CategoryTreeDrawer(
         onCategoryClick = { id, name -> onCategoryClick(id, name) },
         content = {
             CatalogScreenScaffold(

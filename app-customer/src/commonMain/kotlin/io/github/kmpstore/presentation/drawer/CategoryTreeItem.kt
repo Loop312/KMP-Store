@@ -2,89 +2,27 @@ package io.github.kmpstore.presentation.drawer
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.DrawerValue
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalDrawerSheet
-import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberDrawerState
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import io.github.kmpstore.Category
 import kmpstore.shared.ui.generated.resources.Res
-import kmpstore.shared.ui.generated.resources.arrow_drop_up
 import kmpstore.shared.ui.generated.resources.arrow_drop_down
+import kmpstore.shared.ui.generated.resources.arrow_drop_up
 import org.jetbrains.compose.resources.painterResource
-import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun DrawerCategoryTree(
-    viewModel: DrawerViewModel = koinViewModel(),
-    onCategoryClick: (String, String) -> Unit,
-    content: @Composable () -> Unit
-) {
-    val state by viewModel.state.collectAsState()
-
-    // Setup the material drawer state and watch it
-    val drawerState = rememberDrawerState(
-        initialValue = DrawerValue.Closed,
-        confirmStateChange = { drawerValue ->
-            // Intercept manual swipes/scrim clicks to notify the ViewModel
-            if (drawerValue == DrawerValue.Closed) {
-                viewModel.onIntent(DrawerIntent.CloseDrawer)
-            } else {
-                viewModel.onIntent(DrawerIntent.OpenDrawer)
-            }
-            true
-        }
-    )
-
-    // One-way sync from ViewModel state to Drawer Animation state
-    LaunchedEffect(state.isOpen) {
-        if (state.isOpen && drawerState.isClosed) {
-            drawerState.open()
-        } else if (!state.isOpen && drawerState.isOpen) {
-            drawerState.close()
-        }
-    }
-
-    ModalNavigationDrawer(
-        drawerState = drawerState,
-        drawerContent = {
-            ModalDrawerSheet(modifier = Modifier.width(300.dp)) {
-                Text(
-                    text = "Categories",
-                    style = MaterialTheme.typography.headlineSmall,
-                    modifier = Modifier.padding(16.dp)
-                )
-
-                val rootCategories = state.categoriesByParent[null] ?: emptyList()
-
-                LazyColumn(modifier = Modifier.fillMaxSize()) {
-                    items(rootCategories, key = { it.id }) { rootCategory ->
-                        DrawerCategoryTreeItem(
-                            category = rootCategory,
-                            categoriesByParent = state.categoriesByParent,
-                            openCategories = state.openCategories, // Pass open tracking down
-                            onIntent = viewModel::onIntent,       // Pass intent handler down
-                            onCategoryClick = onCategoryClick
-                        )
-                    }
-                }
-            }
-        },
-        content = content
-    )
-}
-
-@Composable
-fun DrawerCategoryTreeItem(
+internal fun CategoryTreeItem(
     category: Category,
     categoriesByParent: Map<String?, List<Category>>,
     openCategories: Set<Category>,
@@ -109,8 +47,8 @@ fun DrawerCategoryTreeItem(
 //                        val intent = if (isExpanded) DrawerIntent.CloseCategory(category) else DrawerIntent.OpenCategory(category)
 //                        onIntent(intent)
 //                    } else {
-                        onCategoryClick(category.id, category.name)
-                        onIntent(DrawerIntent.CloseDrawer) // Close drawer automatically on final selection
+                    onCategoryClick(category.id, category.name)
+                    onIntent(DrawerIntent.CloseDrawer) // Close drawer automatically on final selection
 //                    }
                 }
                 .padding(horizontal = 16.dp, vertical = 12.dp)
@@ -139,7 +77,7 @@ fun DrawerCategoryTreeItem(
         AnimatedVisibility(visible = isExpanded) {
             Column {
                 subCategories.forEach { childCategory ->
-                    DrawerCategoryTreeItem(
+                    CategoryTreeItem(
                         category = childCategory,
                         categoriesByParent = categoriesByParent,
                         openCategories = openCategories,
