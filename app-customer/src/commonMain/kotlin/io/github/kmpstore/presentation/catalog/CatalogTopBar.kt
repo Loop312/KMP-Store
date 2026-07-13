@@ -1,6 +1,5 @@
 package io.github.kmpstore.presentation.catalog
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -23,11 +22,11 @@ import androidx.compose.ui.unit.dp
 import io.github.kmpstore.STORE_NAME
 import io.github.kmpstore.domain.model.Product
 import io.github.kmpstore.pad
+import io.github.kmpstore.presentation.drawer.DrawerIcon
 import io.github.kmpstore.presentation.util.CartButton
 import io.github.kmpstore.theme.ThemeToggleButton
 import kmpstore.shared.ui.generated.resources.Res
 import kmpstore.shared.ui.generated.resources.ic_search
-import kmpstore.shared.ui.generated.resources.menu
 import org.jetbrains.compose.resources.painterResource
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -44,15 +43,7 @@ internal fun CatalogTopBar(
     val isExpanded = searchQuery.isNotBlank()
 
     TopAppBar(
-        navigationIcon = {
-            Icon(
-                painter = painterResource(Res.drawable.menu),
-                contentDescription = "Open navigation menu",
-                modifier = Modifier
-                    .size(32.dp)
-                    .clickable(onClick = onDrawerClick)
-            )
-        },
+        navigationIcon = { DrawerIcon(onClick = onDrawerClick) },
         title = {
             // Use Alignment.CenterVertically to force the Title Text and SearchBar to line up perfectly
             Row(
