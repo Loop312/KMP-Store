@@ -1,0 +1,22 @@
+## This file must *NOT* be checked into Version Control Systems,
+# as it contains information specific to your local configuration.
+#
+# Location of the SDK. This is only used by Gradle.
+# For customization when using a Version Control System, please read the
+# header note.
+#sdk.dir=...\\Android\\Sdk
+
+#CONFIGURATION (remove "#" from lines that you want to change the variables for):
+#REQUIRED
+#SUPABASE_URL=https://example.supabase.co
+#REQUIRED
+#SUPABASE_KEY=sb_publishable_example
+#RECOMMENDED
+#STORE_NAME=Store Name
+#OPTIONAL (popup that shows at the beginning.)
+#VERIFICATION_MESSAGE=This is a verification message.
+
+#make sure that max cart size does not exceed 30 due to the way the system was designed.
+#I've cut a lot of stripes api bloat by injecting the contents of the cart into the metadata.
+#but that comes with the tradeoff of the metadata only allowed to be so big.
+#MAX_CART_SIZE=25
