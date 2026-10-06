@@ -1,100 +1,63 @@
-This is a Kotlin Multiplatform project targeting Android, iOS, Web, Desktop (JVM), Server.
+# KMPStore
 
-* [/composeApp](./composeApp/src) is for code that will be shared across your Compose Multiplatform applications.
-  It contains several subfolders:
-    - [commonMain](./composeApp/src/commonMain/kotlin) is for code that’s common for all targets.
-    - Other folders are for Kotlin code that will be compiled for only the platform indicated in the folder name.
-      For example, if you want to use Apple’s CoreCrypto for the iOS part of your Kotlin app,
-      the [iosMain](./composeApp/src/iosMain/kotlin) folder would be the right place for such calls.
-      Similarly, if you want to edit the Desktop (JVM) specific part, the [jvmMain](./composeApp/src/jvmMain/kotlin)
-      folder is the appropriate location.
+Full e-commerce suite written with Compose Multiplatform + MVI.
 
-* [/iosApp](./iosApp/iosApp) contains iOS applications. Even if you’re sharing your UI with Compose Multiplatform,
-  you need this entry point for your iOS app. This is also where you should add SwiftUI code for your project.
+- **Catalog (customer) app** (`:app-customer`): storefront — browse categories/products, search, cart, Stripe checkout via Supabase Edge Function. SQLDelight offline cache, Navigation3.
+- **Operator app** (`:app-operator`): fulfillment — claim orders, update `pending → processing → shipped → delivered/cancelled`, realtime updates, aggregate packing manifest. No Navigation3, single dashboard.
+- **Backend:** Supabase (Postgres + Auth + Realtime + Edge Functions) + Stripe (via [Stripe Sync Engine](https://supabase.com/docs/guides/integrations/stripe) + custom `stripe-checkout` Edge Function).
+- **DI:** Koin. **Secrets:** BuildKonfig + `local.properties` (keys never committed).
 
-* [/server](./server/src/main/kotlin) is for the Ktor server application.
+Targets: Android, iOS (`iosArm64`/`iosSimulatorArm64`), Desktop (JVM), Web (JS + WasmJS). See `settings.gradle.kts` for modules: `:app-customer`, `:app-operator`, `:shared:core`, `:shared:ui`, `:shared:operator`, `:server`.
 
-* [/shared](./shared/src) is for the code that will be shared between all targets in the project.
-  The most important subfolder is [commonMain](./shared/src/commonMain/kotlin). If preferred, you
-  can add code to the platform-specific folders here too.
+## Docs
 
-### Build and Run Android Application
+- [`docs/SETUP.md`](docs/SETUP.md) — full setup: Stripe → Supabase → SQL order → operator role/RLS/Realtime → Edge Function → `local.properties` → run apps → `collectBuilds`.
+- [`docs/CUSTOMIZATION.md`](docs/CUSTOMIZATION.md) — landing page, theme, store name, cart limits, categories via Stripe metadata, checkout countries/URLs.
+- [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) — MVI, Koin modules, SQLDelight cache, Navigation3, operator realtime + manifest (`price_id:quantity` metadata trick).
 
-To build and run the development version of the Android app, use the run configuration from the run widget
-in your IDE’s toolbar or build it directly from the terminal:
+## Quickstart
 
-- on macOS/Linux
-  ```shell
-  ./gradlew :composeApp:assembleDebug
-  ```
-- on Windows
-  ```shell
-  .\gradlew.bat :composeApp:assembleDebug
-  ```
+```bash
+# 1. Supabase + Stripe first (creates stripe.products/prices tables)
+#    Follow docs/SETUP.md §1-4, run SQL in /supabase/sql in order,
+#    deploy /supabase/edge-functions/stripe-checkout.ts
 
-### Build and Run Desktop (JVM) Application
+# 2. Client config (see shared/core/build.gradle.kts BuildKonfig block)
+cp local.properties.example local.properties  # then uncomment + fill in keys
+# REQUIRED: SUPABASE_URL, SUPABASE_KEY
+# RECOMMENDED: STORE_NAME
+# OPTIONAL: VERIFICATION_MESSAGE (dialog on launch), MAX_CART_SIZE (keep ≤ 30, Stripe metadata limit)
 
-To build and run the development version of the desktop app, use the run configuration from the run widget
-in your IDE’s toolbar or run it directly from the terminal:
+# 3. Run
+./gradlew :app-customer:wasmJsBrowserDevelopmentRun  # customer web (wasm, fast)
+./gradlew :app-customer:jsBrowserDevelopmentRun      # customer web (js, compat)
+./gradlew :app-customer:run                         # customer desktop
+./gradlew :app-operator:run                         # operator desktop
+./gradlew :app-customer:assembleDebug               # customer android
+./gradlew :app-operator:assembleDebug                # operator android
+# iOS: open iosApp/ in Xcode
 
-- on macOS/Linux
-  ```shell
-  ./gradlew :composeApp:run
-  ```
-- on Windows
-  ```shell
-  .\gradlew.bat :composeApp:run
-  ```
+# 4. Collect outputs for all systems except iOS into !buildOutputs/<module>/{android,js,wasm,desktop}/
+./gradlew collectBuilds   # root build.gradle.kts (desktop = host OS; iOS via Xcode)
+```
 
-### Build and Run Server
+> `collectBuilds` runs `assemble` + `createDistributable` on all subprojects, then copies APKs (`**/*.apk`), `build/dist/js|wasmJs/productionExecutable/`, `build/compose/binaries/main/app/` into `!buildOutputs/`. Covers all systems **except iOS**. Desktop binary matches the OS you build on. `:server` jar is **not** collected — grab it from its `build/` dir manually (It's only if you want to build a custom backend but we're not using that in this project so you can ignore it).
 
-To build and run the development version of the server, use the run configuration from the run widget
-in your IDE’s toolbar or run it directly from the terminal:
+## Checkout flow (unified for all platforms)
 
-- on macOS/Linux
-  ```shell
-  ./gradlew :server:run
-  ```
-- on Windows
-  ```shell
-  .\gradlew.bat :server:run
-  ```
+`CartViewModel` (`shared/core/.../presentation/cart/CartViewModel.kt:104-157`) → `supabase.functions.invoke("stripe-checkout", {items:[{price: priceId, quantity}]})` → Edge Function creates `stripe.checkout.sessions.create({line_items: items, metadata: {priceId: quantity}, mode:'payment', shipping_address_collection, success_url/cancel_url})` → returns `{url}` → app opens URL, empties cart. Operator manifest later re-expands `metadata` (`price_id:quantity`) to avoid Stripe line-item bloat — see `SupabaseOperatorRepository.getAggregateManifest()`.
 
-### Build and Run Web Application
+## Customization TL;DR
 
-To build and run the development version of the web app, use the run configuration from the run widget
-in your IDE's toolbar or run it directly from the terminal:
+```kotlin
+// shared/ui/.../theme/Color.kt
+private val PrimaryColor = Color(0xFF6200EE)   // change hexes to retheme
+var isDarkTheme by mutableStateOf(false)       // -> true to default to dark
+```
 
-- for the Wasm target (faster, modern browsers):
-    - on macOS/Linux
-      ```shell
-      ./gradlew :composeApp:wasmJsBrowserDevelopmentRun
-      ```
-    - on Windows
-      ```shell
-      .\gradlew.bat :composeApp:wasmJsBrowserDevelopmentRun
-      ```
-- for the JS target (slower, supports older browsers):
-    - on macOS/Linux
-      ```shell
-      ./gradlew :composeApp:jsBrowserDevelopmentRun
-      ```
-    - on Windows
-      ```shell
-      .\gradlew.bat :composeApp:jsBrowserDevelopmentRun
-      ```
+```html
+<!-- app-customer/src/webMain/resources/index.html : replace with your landing page -->
+<a href="./app/" class="btn">Launch App</a> <!-- must keep ./app/ link -->
+```
 
-### Build and Run iOS Application
-
-To build and run the development version of the iOS app, use the run configuration from the run widget
-in your IDE’s toolbar or open the [/iosApp](./iosApp) directory in Xcode and run it from there.
-
----
-
-Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html),
-[Compose Multiplatform](https://github.com/JetBrains/compose-multiplatform/#compose-multiplatform),
-[Kotlin/Wasm](https://kotl.in/wasm/)…
-
-We would appreciate your feedback on Compose/Web and Kotlin/Wasm in the public Slack
-channel [#compose-web](https://slack-chats.kotlinlang.org/c/compose-web).
-If you face any issues, please report them on [YouTrack](https://youtrack.jetbrains.com/newIssue?project=CMP).
+Full details: `docs/CUSTOMIZATION.md`.
